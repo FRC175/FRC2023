@@ -6,9 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+// import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.ControllerConstants;
+import frc.robot.models.AdvancedXboxController;
+import frc.robot.subsystems.Drive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,14 +23,57 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final Drive drive;
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final AdvancedXboxController driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
+  private final AdvancedXboxController operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+  private final SendableChooser<Command> autoChooser;
+
+  private static RobotContainer instance;
+
+
+
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    drive = Drive.getInstance();
+
+    autoChooser = new SendableChooser<>();
+
+    // Configure the default commands
+    configureDefaultCommands();
+
     // Configure the button bindings
     configureButtonBindings();
+
+    // Configure auto mode
+    configureAutoChooser();
+  }
+
+  public static RobotContainer getInstance() {
+    if (instance == null) {
+        instance = new RobotContainer();
+    }
+
+    return instance;
+  }
+
+  private void configureDefaultCommands() {
+    // Arcade Drive
+    drive.setDefaultCommand(
+      // While the drive subsystem is not called by other subsystems, call the arcade drive method using the
+      // controller's throttle and turn. When it is called, set the motors to 0% power.
+      new RunCommand(() -> {
+        double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
+        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
+
+        drive.arcadeDrive(throttle, turn);
+
+      }, drive).andThen(() -> drive.arcadeDrive(0, 0) , drive)
+    );
   }
 
   /**
@@ -36,6 +84,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {}
 
+  private void configureAutoChooser() {
+    autoChooser.setDefaultOption("Nothing", new WaitCommand(0));;
+  }
+
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -43,6 +96,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return autoChooser.getSelected();
   }
 }
