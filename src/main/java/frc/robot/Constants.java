@@ -18,12 +18,14 @@ public final class Constants {
         public static final int OPERATOR_CONTROLLER_PORT = 1;
 
         public static final double CONTROLLER_DEADBAND = 0.1;
-
-        public static final double test = 0;
     }
 
     public static final class DriveConstants {
         public static final int RIGHT_MASTER_PORT = 0;
         public static final int LEFT_MASTER_PORT = 0;
+    }
+
+    public static final class LiftConstants {
+        public static final int LEFT_LIFT_PORT = 0;
     }
 }

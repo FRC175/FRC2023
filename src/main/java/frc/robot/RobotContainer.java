@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.models.AdvancedXboxController;
+import frc.robot.models.XboxButton;
 import frc.robot.subsystems.Drive;
 
 /**
@@ -27,8 +28,8 @@ public class RobotContainer {
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive drive;
 
-  private final AdvancedXboxController driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
-  private final AdvancedXboxController operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+  private final AdvancedXboxController driverController;
+  private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
 
   private static RobotContainer instance;
@@ -40,6 +41,9 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
+
+    driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
+    operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
     autoChooser = new SendableChooser<>();
 
@@ -72,7 +76,7 @@ public class RobotContainer {
 
         drive.arcadeDrive(throttle, turn);
 
-      }, drive).andThen(() -> drive.arcadeDrive(0, 0) , drive)
+      }, drive).andThen(() -> drive.arcadeDrive(0, 0), drive)
     );
   }
 
@@ -82,7 +86,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    new XboxButton(driverController, AdvancedXboxController.Button.A)
+      .whenPressed(() -> {
+        System.out.println("Hello");
+      }, drive);
+  }
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));;
