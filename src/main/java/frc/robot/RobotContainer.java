@@ -4,27 +4,21 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-// import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
+import frc.robot.models.AdvancedXboxController.Button;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.SubsystemBase;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // THIS IS A PLACEHOLDER
+  private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive drive;
 
@@ -34,11 +28,6 @@ public class RobotContainer {
 
   private static RobotContainer instance;
 
-
-
-
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
 
@@ -66,45 +55,23 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    // Arcade Drive
-    drive.setDefaultCommand(
-      // While the drive subsystem is not called by other subsystems, call the arcade drive method using the
-      // controller's throttle and turn. When it is called, set the motors to 0% power.
-      new RunCommand(() -> {
-        double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
-
-        drive.arcadeDrive(throttle, turn);
-
-      }, drive).andThen(() -> drive.arcadeDrive(0, 0), drive)
-    );
+    //GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE LINE ONLY!!!
+    drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void configureButtonBindings() {
-    new XboxButton(driverController, AdvancedXboxController.Button.A)
-      .whenPressed(() -> {
-        System.out.println("Hello");
-      }, drive);
+    // PUT A COMMAND HERE SIMILAR TO DEFAULT COMMANDS DO IT LIKE THIS
+    new XboxButton(driverController, Button.A)
+      .whenPressed(new ExampleCommand(exampleSubsystem));
   }
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));;
+    // Put auto modes here when ready!
   }
 
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
+    // Pulls mode from shuffleboard (do not touch until ready)
     return autoChooser.getSelected();
   }
 }
