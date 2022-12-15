@@ -21,11 +21,9 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        public static final int RIGHT_MASTER_PORT = 0;
-        public static final int LEFT_MASTER_PORT = 0;
+        // PUT DRIVE MOTOR CONSTANTS HERE
     }
 
-    public static final class LiftConstants {
-        public static final int LEFT_LIFT_PORT = 0;
-    }
+    // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE
+
 }
