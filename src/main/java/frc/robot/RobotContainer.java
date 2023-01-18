@@ -4,15 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.models.AdvancedXboxController;
-import frc.robot.models.XboxButton;
-import frc.robot.models.AdvancedXboxController.Button;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.SubsystemBase;
 
@@ -22,8 +20,8 @@ public class RobotContainer {
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive drive;
 
-  private final AdvancedXboxController driverController;
-  private final AdvancedXboxController operatorController;
+  private final XboxController driverController;
+  // private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
 
   private static RobotContainer instance;
@@ -31,8 +29,8 @@ public class RobotContainer {
   public RobotContainer() {
     drive = Drive.getInstance();
 
-    driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
-    operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+    driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
+    // operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
     autoChooser = new SendableChooser<>();
 
@@ -56,13 +54,15 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     //GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE LINE ONLY!!!
-    drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
+    // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
   }
 
   private void configureButtonBindings() {
     // PUT A COMMAND HERE SIMILAR TO DEFAULT COMMANDS DO IT LIKE THIS
-    new XboxButton(driverController, Button.A)
-      .whenPressed(new ExampleCommand(exampleSubsystem));
+    new Trigger(() -> driverController.getAButton())
+      .toggleOnTrue(new RunCommand(() -> {
+        System.out.println("toggle on true");
+      }, drive));
   }
 
   private void configureAutoChooser() {
