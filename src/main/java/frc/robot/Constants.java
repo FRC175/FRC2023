@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI.Port;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -22,6 +25,11 @@ public final class Constants {
 
     public static final class DriveConstants {
         // PUT DRIVE MOTOR CONSTANTS HERE
+        public static final int RIGHT_MASTER_PORT = 5;
+        public static final int RIGHT_SLAVE_PORT = 4;
+        public static final int LEFT_MASTER_PORT = 3;
+        public static final int LEFT_SLAVE_PORT = 2;
+        public static final Port GYRO_PORT = SPI.Port.kOnboardCS0;
     }
 
     // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE

@@ -13,18 +13,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.SubsystemBase;
+import frc.robot.subsystems.Drive;
 
 public class RobotContainer {
   // THIS IS A PLACEHOLDER
   private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final Drive drive;
+  private final Drive drive; 
 
   private final XboxController driverController;
   // private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
 
   private static RobotContainer instance;
+
 
   public RobotContainer() {
     drive = Drive.getInstance();
@@ -55,6 +57,18 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     //GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE LINE ONLY!!!
     // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
+    drive.setDefaultCommand(new RunCommand(() -> {
+      double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
+      double turn = -1 * driverController.getLeftX(); 
+
+      drive.arcadeDrive(throttle, turn);
+      
+      
+      
+      System.out.println(drive.getAngle());
+    }, drive));
+
+
   }
 
   private void configureButtonBindings() {
@@ -62,7 +76,7 @@ public class RobotContainer {
     new Trigger(() -> driverController.getAButton())
       .toggleOnTrue(new RunCommand(() -> {
         System.out.println("toggle on true");
-      }, drive));
+      }, exampleSubsystem));
   }
 
   private void configureAutoChooser() {

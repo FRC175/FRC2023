@@ -20,6 +20,13 @@ public final class DriveHelper {
 
     // BASIC ARCADE DRIVE (PUT THE MATH IN)
     public void arcadeDrive(double throttle, double turn) {
+       double leftOut = throttle - turn; 
+       double rightOut = throttle + turn; 
+       left.set(leftOut);
+       right.set(rightOut); 
+       
+       
+       
         // MATH
     }
 }
