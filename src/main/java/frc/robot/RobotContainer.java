@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -59,14 +61,20 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     //GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE LINE ONLY!!!
     // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
+
+    colorSensor.setDefaultCommand(new GetColor(colorSensor));
+    // colorSensor.setDefaultCommand(new RunCommand(() -> {
+    //   SmartDashboard.putNumber("distance", colorSensor.getDistance());
+    // }, colorSensor));
   }
 
   private void configureButtonBindings() {
     // PUT A COMMAND HERE SIMILAR TO DEFAULT COMMANDS DO IT LIKE THIS
-    new Trigger(() -> driverController.getAButton())
-      .toggleOnTrue(new RunCommand(() -> {
-        System.out.println("toggle on true");
-      }, drive));
+    // new Trigger(() -> driverController.getBButtonPressed())
+      // .toggleOnTrue(new GetColor(colorSensor));
+     
+
+
   }
 
   private void configureAutoChooser() {

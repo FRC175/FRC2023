@@ -5,7 +5,10 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ColorSensor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+
 
 
 public class GetColor extends CommandBase {
@@ -26,8 +29,10 @@ public class GetColor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("\"B\" button was pressed");
+    // System.out.println("\"B\" button was pressed");
     System.out.println(colorSensor.determineColor());
+    SmartDashboard.putBoolean("Is Red?", colorSensor.determineColor());
+    
   }
 
   // Called once the command ends or is interrupted.
