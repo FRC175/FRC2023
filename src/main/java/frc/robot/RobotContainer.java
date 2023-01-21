@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.GetColor;
+import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.SubsystemBase;
 
@@ -19,6 +21,7 @@ public class RobotContainer {
   private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive drive;
+  private final ColorSensor colorSensor;
 
   private final XboxController driverController;
   // private final AdvancedXboxController operatorController;
@@ -28,6 +31,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drive = Drive.getInstance();
+    colorSensor = ColorSensor.getInstance();
 
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     // operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
