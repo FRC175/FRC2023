@@ -24,6 +24,11 @@ public final class Constants {
         // PUT DRIVE MOTOR CONSTANTS HERE
     }
 
+    public static final class IntakeConstants {
+        public static final int PULLER_MASTER = 7;
+        public static final int PULLER_SLAVE = 6;
+    }
+
     // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE
 
 }

@@ -16,13 +16,19 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.GetColor;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SubsystemBase;
 
 public class RobotContainer {
   // THIS IS A PLACEHOLDER
-  private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
-  // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final SubsystemBase exampleSubsystem = new SubsystemBase() {
+    public void resetSensors() {
+    };
+  };
+  // private final ExampleCommand m_autoCommand = new
+  // ExampleCommand(m_exampleSubsystem);
   private final Drive drive;
+  private final Intake intake;
   private final ColorSensor colorSensor;
 
   private final XboxController driverController;
@@ -33,10 +39,12 @@ public class RobotContainer {
 
   public RobotContainer() {
     drive = Drive.getInstance();
+    intake = Intake.getInstance();
     colorSensor = ColorSensor.getInstance();
 
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
-    // operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+    // operatorController = new
+    // AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
     autoChooser = new SendableChooser<>();
 
@@ -52,33 +60,42 @@ public class RobotContainer {
 
   public static RobotContainer getInstance() {
     if (instance == null) {
-        instance = new RobotContainer();
+      instance = new RobotContainer();
     }
 
     return instance;
   }
 
   private void configureDefaultCommands() {
-    //GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE LINE ONLY!!!
-    // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
+    // GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE
+    // LINE ONLY!!!
+    // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive
+    // Command");}, drive));
 
     colorSensor.setDefaultCommand(new GetColor(colorSensor));
     // colorSensor.setDefaultCommand(new RunCommand(() -> {
-    //   SmartDashboard.putNumber("distance", colorSensor.getDistance());
+    // SmartDashboard.putNumber("distance", colorSensor.getDistance());
     // }, colorSensor));
   }
 
   private void configureButtonBindings() {
     // PUT A COMMAND HERE SIMILAR TO DEFAULT COMMANDS DO IT LIKE THIS
     // new Trigger(() -> driverController.getBButtonPressed())
-      // .toggleOnTrue(new GetColor(colorSensor));
-     
+    // .toggleOnTrue(new GetColor(colorSensor));
 
+    new Trigger(() -> driverController.getAButton())
+    .toggleOnTrue(new RunCommand(() -> {
+      intake.setOpenLoop(0.5);
+    }, intake))
+    .toggleOnFalse(new RunCommand(() -> {
+      intake.setOpenLoop(0.0); 
+    }, intake)); 
 
   }
 
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("Nothing", new WaitCommand(0));;
+    autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
+    ;
     // Put auto modes here when ready!
   }
 
