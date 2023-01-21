@@ -52,9 +52,11 @@ public class ColorSensor extends SubsystemBase{
         SmartDashboard.putString("rgbValue", result.red + "," + result.green + "," + result.blue);
 
         if (match.confidence > 0.7 && match.color == red && getDistance() > 500) {
+            SmartDashboard.putBoolean("Is red?", true);
             return true;
         }
         
+        SmartDashboard.putBoolean("Is red?", false);
         return false;
     }
 

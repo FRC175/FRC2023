@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.Balancing;
 import frc.robot.commands.ColorDrive;
 import frc.robot.commands.GetColor;
 import frc.robot.subsystems.ColorSensor;
@@ -72,7 +73,7 @@ public class RobotContainer {
     // LINE ONLY!!!
     // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive
     // Command");}, drive));
-    intake.setDefaultCommand(new ColorDrive(colorSensor, intake));
+    // intake.setDefaultCommand(new ColorDrive(colorSensor, intake));
 
     // colorSensor.setDefaultCommand(new GetColor(colorSensor));
     // colorSensor.setDefaultCommand(new RunCommand(() -> {
@@ -93,6 +94,8 @@ public class RobotContainer {
       intake.setOpenLoop(0.0); 
     }, intake)); 
 
+    new Trigger(() -> driverController.getBButton())
+    .toggleOnTrue(new Balancing(colorSensor, drive));
   }
 
   private void configureAutoChooser() {
