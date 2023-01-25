@@ -60,12 +60,9 @@ public class RobotContainer {
     drive.setDefaultCommand(new RunCommand(() -> {
       double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
       double turn = -1 * driverController.getLeftX(); 
-
-      drive.arcadeDrive(throttle, turn);
-      
-      
-      
-      System.out.println(drive.getAngle());
+    //drive.setOpenLoop(0, driverController.getRightTriggerAxis());
+    // drive.arcadeDrive(throttle, turn);
+      drive.accelDrive(throttle, turn);
     }, drive));
 
 

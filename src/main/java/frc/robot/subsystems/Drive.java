@@ -1,11 +1,14 @@
 package frc.robot.subsystems;
 
+import java.sql.SQLInvalidAuthorizationSpecException;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -16,6 +19,7 @@ import frc.robot.utils.DriveHelper;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants.DriveConstants;
+import com.revrobotics.RelativeEncoder;
 
 public final class Drive extends SubsystemBase {
 
@@ -25,6 +29,7 @@ public final class Drive extends SubsystemBase {
     
     private final ADXRS450_Gyro gyro;
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private final RelativeEncoder leftMasterEncoder, rightMasterEncoder, leftSlaveEncoder, rightSlaveEncoder; 
     private final  DriveHelper driveHelper;
     
     private Drive() {
@@ -37,11 +42,17 @@ public final class Drive extends SubsystemBase {
         leftSlave = new CANSparkMax(DriveConstants.LEFT_SLAVE_PORT, MotorType.kBrushless);
         rightMaster = new CANSparkMax(DriveConstants.RIGHT_MASTER_PORT, MotorType.kBrushless);
         rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, MotorType.kBrushless);
-        driveHelper = new DriveHelper(leftMaster, rightMaster);
-        
-       
 
-        
+        leftMasterEncoder = leftMaster.getEncoder();
+        leftSlaveEncoder = leftSlave.getEncoder(); 
+        rightMasterEncoder = rightMaster.getEncoder();
+        rightSlaveEncoder = rightSlave.getEncoder();
+        driveHelper = new DriveHelper(leftMaster, rightMaster, leftMasterEncoder, rightMasterEncoder);
+
+        // leftMaster.setOpenLoopRampRate(3.0);
+        // leftSlave.setOpenLoopRampRate(3.0);
+        // rightMaster.setOpenLoopRampRate(3.0);
+        // rightSlave.setOpenLoopRampRate(3.0);
 
         // PUT MASTER MOTORS INTO DRIVEHELPER
 
@@ -87,7 +98,6 @@ public final class Drive extends SubsystemBase {
     public void setOpenLoop (double leftDemand, double rightDemand) {
         leftMaster.set(leftDemand);
         rightMaster.set(rightDemand);
-
     }
 
     // PUT DRIVE METHODS HERE (ARCADE, ACCEL)
@@ -95,13 +105,34 @@ public final class Drive extends SubsystemBase {
     public void arcadeDrive (double throttle, double turn) {
         driveHelper.arcadeDrive(throttle, turn);
     }
-    public void accelDrive () {
+
+    PIDController controller = new PIDController(0.0, 1, 0.0);
+
+    public void accelDrive (double throttle, double turn) {
+        // controller.setSetpoint(speed);
+        // double output = controller.calculate(rightMasterEncoder.getVelocity() / DriveConstants.MAX_RPM);  
+        // // double error = (speed * DriveConstants.MAX_RPM) - rightMasterEncoder.getVelocity(); 
+        // // double kP = 1.0; 
+        // // double output = (rightMasterEncoder.getVelocity() + error * kP) / DriveConstants.MAX_RPM; 
+        // setOpenLoop(output, output);
+        // SmartDashboard.putNumber("Output", output);
+
+        driveHelper.accelDrive(throttle, turn);
+        
+        
         // placeholder
     }
     public void parkingDrive () {
         // placeholder
     }
     
+    public double getRightRPM() {
+        SmartDashboard.putNumber("Right RPM", rightMasterEncoder.getVelocity());
+        return rightMasterEncoder.getVelocity();
+    }
+
+
+
     @Override
     public void resetSensors() {
         
