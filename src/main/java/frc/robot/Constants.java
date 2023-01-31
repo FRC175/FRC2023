@@ -30,6 +30,7 @@ public final class Constants {
         public static final int LEFT_MASTER_PORT = 3;
         public static final int LEFT_SLAVE_PORT = 2;
         public static final Port GYRO_PORT = SPI.Port.kOnboardCS0;
+        
 
         public static final double MAX_RPM = 5700.0; 
     }
