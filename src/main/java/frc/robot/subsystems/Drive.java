@@ -1,24 +1,13 @@
 package frc.robot.subsystems;
 
-import java.sql.SQLInvalidAuthorizationSpecException;
-
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.AnalogInput;
-import frc.robot.Constants.DriveConstants;
 import com.revrobotics.RelativeEncoder;
 
 public final class Drive extends SubsystemBase {
@@ -131,6 +120,9 @@ public final class Drive extends SubsystemBase {
         return rightMasterEncoder.getVelocity();
     }
 
+        public double rightCounts() {
+            return rightMasterEncoder.getPosition();
+        }
 
 
     @Override

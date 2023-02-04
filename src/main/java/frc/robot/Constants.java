@@ -35,6 +35,11 @@ public final class Constants {
         public static final double MAX_RPM = 5700.0; 
     }
 
+    public static final class IntakeConstants {
+        // ADD IN PORTS FOR ACTUAL INTAKE WHEN NESCESSARY
+        public static final int INTAKE_PORT = 7;
+    }
+    }
     // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE
 
-}
+
