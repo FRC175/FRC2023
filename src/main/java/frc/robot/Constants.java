@@ -27,8 +27,8 @@ public final class Constants {
     }
 
 public final class ArmConstants {
-    public static final int SHIFTER_FORWARD_CHANNEL = 0;
-    public static final int SHIFTER_REVERSE_CHANNEL = 1;
+    public static final int SHIFTER_FORWARD_CHANNEL = 2;
+    public static final int SHIFTER_REVERSE_CHANNEL = 3;
 }
 
     public static final class DriveConstants {
@@ -38,6 +38,9 @@ public final class ArmConstants {
         public static final int LEFT_MASTER_PORT = 3;
         public static final int LEFT_SLAVE_PORT = 2;
         public static final Port GYRO_PORT = SPI.Port.kOnboardCS0;
+        public static final int LAT_DRIVE_PORT = 22;
+        public static final int LAT_FORWARD_CHANNEL = 0;
+        public static final int LAT_REVERSE_CHANNEL = 1;
     }
 
     public static final class IntakeConstants {

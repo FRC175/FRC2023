@@ -86,6 +86,19 @@ public class RobotContainer {
       led.setDefaultCommand(new InstantCommand(() -> {
       led.setLED(0.95);
       }, led));
+
+
+      drive.setDefaultCommand(new RunCommand(() -> {
+        if (driverController.getRightBumper()) {
+          drive.extendLat(true);
+          drive.latDrive(driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis());
+          SmartDashboard.putBoolean("Lat", true);
+        } else {
+          drive.extendLat(false);
+          drive.latDrive(0);
+          SmartDashboard.putBoolean("Lat", false);
+        }
+      }, drive));
   }
 
   private void configureButtonBindings() {
@@ -133,6 +146,14 @@ public class RobotContainer {
       led.setLED(0.91);
      }, led));
 
+    // new Trigger(() -> driverController.getRightBumper())
+    // .whileTrue(new RunCommand(() -> {
+    //   drive.extendLat(true);
+    //   drive.latDrive(driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis());
+    // }, drive).andThen(() -> {
+    //   drive.extendLat(false);
+    //   drive.latDrive(0);
+    // }, drive));
 
 
     //  new Trigger(() -> operatorController.getPOV() ==180)

@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -11,10 +13,15 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.Constants.DriveConstants;
 
 public final class Drive extends SubsystemBase {
@@ -26,6 +33,8 @@ public final class Drive extends SubsystemBase {
     private final ADXRS450_Gyro gyro;
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final  DriveHelper driveHelper;
+    private final DoubleSolenoid solenoidLat;
+    private final TalonSRX latMotor;
     
     private Drive() {
         // INSTANTIATE MOTORS HERE
@@ -38,8 +47,8 @@ public final class Drive extends SubsystemBase {
         rightMaster = new CANSparkMax(DriveConstants.RIGHT_MASTER_PORT, MotorType.kBrushless);
         rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, MotorType.kBrushless);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
-        
-       
+        solenoidLat = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, DriveConstants.LAT_FORWARD_CHANNEL, DriveConstants.LAT_REVERSE_CHANNEL);
+       latMotor = new TalonSRX(DriveConstants.LAT_DRIVE_PORT);
 
         
 
@@ -58,6 +67,15 @@ public final class Drive extends SubsystemBase {
         }
 
         return instance;
+    }
+
+    public void latDrive(double speed) {
+        latMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void extendLat(boolean extend) {
+        solenoidLat.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+        SmartDashboard.putBoolean("Is Lat Extend?", extend);
     }
 
       public double getAngle() {
