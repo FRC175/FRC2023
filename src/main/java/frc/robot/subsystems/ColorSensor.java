@@ -12,8 +12,12 @@ public class ColorSensor extends SubsystemBase{
     //PRIVATE IS ONE OF THREE ACCESS MODIFIERS, FINAL MEANS IT CAN'T CHANGE FROM ITS INITIAL INSTANCE, AND COLORSENSORV3 IS ITS TYPE
     private final ColorSensorV3 colorSensor;
     private final ColorMatch colorMatch;
+    private final ColorMatch colorMatchGamePiece;
     private final Color red = new Color(0.5, 0.2, 0.1);
     private final Color blue = new Color(0.139, 0.429, 0.377);
+    private final Color purple = new Color(0.21, 0.35, 0.46);
+    private final Color yellow = new Color(0.36, 0.54, 0.09);
+
 
     private static ColorSensor instance;
 
@@ -21,6 +25,7 @@ public class ColorSensor extends SubsystemBase{
     public ColorSensor() {
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         colorMatch = new ColorMatch();
+        colorMatchGamePiece = new ColorMatch();
 
         configureColorMatches();
     }
@@ -38,11 +43,17 @@ public class ColorSensor extends SubsystemBase{
     private void configureColorMatches() {
         colorMatch.addColorMatch(blue);
         colorMatch.addColorMatch(red);
+        colorMatchGamePiece.addColorMatch(yellow);
+        colorMatchGamePiece.addColorMatch(purple);
+        colorMatchGamePiece.addColorMatch(blue);
+        colorMatchGamePiece.addColorMatch(red);
     }
 
-    public void getColor() {
-        System.out.println("Red " + colorSensor.getColor().red);
-        System.out.println("Blue " + colorSensor.getColor().blue);
+
+
+    public Color getColor() {
+        SmartDashboard.putString("rgb", colorSensor.getColor().red + ", " + colorSensor.getColor().green + ", " + colorSensor.getColor().blue);
+        return colorSensor.getColor();
     }
 
     public boolean determineColor() {
@@ -59,6 +70,29 @@ public class ColorSensor extends SubsystemBase{
         SmartDashboard.putBoolean("Is red?", false);
         return false;
     }
+
+    public char determineGamePiece() {
+        ColorMatchResult match = colorMatchGamePiece.matchClosestColor(colorSensor.getColor());
+         var result = colorSensor.getColor();
+          SmartDashboard.putString("rgbValue", result.red + "," + result.green + "," + result.blue);
+
+          if (match.confidence > 0.95 && match.color == yellow) { 
+            SmartDashboard.putBoolean("Is Yellow?", true);
+            SmartDashboard.putBoolean("Is Purple?", false);
+            return 'y';
+            
+          } else if (match.confidence > 0.7 && match.color == purple) {
+            SmartDashboard.putBoolean("Is Purple?", true);
+            SmartDashboard.putBoolean("Is Yellow?", false);
+            return 'p';
+          } else {
+            SmartDashboard.putBoolean("Is Yellow?", false);
+            SmartDashboard.putBoolean("Is Purple?", false);
+            return 'n';
+          }
+         
+        }
+
 
     public int getDistance() { 
         return colorSensor.getProximity();

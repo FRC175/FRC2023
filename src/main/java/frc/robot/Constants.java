@@ -15,13 +15,21 @@ import edu.wpi.first.wpilibj.SPI.Port;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+
 public final class Constants {
+    public static final int PCM_PORT = 18;
+
     public static final class ControllerConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_CONTROLLER_PORT = 1;
 
         public static final double CONTROLLER_DEADBAND = 0.1;
     }
+
+public final class ArmConstants {
+    public static final int SHIFTER_FORWARD_CHANNEL = 0;
+    public static final int SHIFTER_REVERSE_CHANNEL = 1;
+}
 
     public static final class DriveConstants {
         // PUT DRIVE MOTOR CONSTANTS HERE
@@ -38,5 +46,7 @@ public final class Constants {
     }
 
     // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE
-
+    public static final class LEDConstants {
+        public static final int LED_PORT = 1;
+    }
 }

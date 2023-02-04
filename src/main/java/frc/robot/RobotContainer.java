@@ -9,17 +9,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Balancing;
-import frc.robot.commands.ColorDrive;
-import frc.robot.commands.GetColor;
 import frc.robot.subsystems.ColorSensor;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.SubsystemBase;
+import frc.robot.subsystems.*;
 
 public class RobotContainer {
   // THIS IS A PLACEHOLDER
@@ -32,9 +29,10 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final ColorSensor colorSensor;
-
+  private final Arm arm;
+  private final LED led;
   private final XboxController driverController;
-  // private final AdvancedXboxController operatorController;
+  private final XboxController operatorController;
   private final SendableChooser<Command> autoChooser;
 
   private static RobotContainer instance;
@@ -43,10 +41,10 @@ public class RobotContainer {
     drive = Drive.getInstance();
     intake = Intake.getInstance();
     colorSensor = ColorSensor.getInstance();
-
+    arm = Arm.getInstance();
+    led = LED.getInstance();
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
-    // operatorController = new
-    // AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+    operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
     autoChooser = new SendableChooser<>();
 
@@ -79,6 +77,15 @@ public class RobotContainer {
     // colorSensor.setDefaultCommand(new RunCommand(() -> {
     // SmartDashboard.putNumber("distance", colorSensor.getDistance());
     // }, colorSensor));
+  
+      colorSensor.setDefaultCommand(new RunCommand(() -> {
+        System.out.println(colorSensor.getColor());
+        
+      }, colorSensor));
+
+      led.setDefaultCommand(new InstantCommand(() -> {
+      led.setLED(0.95);
+      }, led));
   }
 
   private void configureButtonBindings() {
@@ -96,7 +103,44 @@ public class RobotContainer {
 
     new Trigger(() -> driverController.getBButton())
     .toggleOnTrue(new Balancing(colorSensor, drive));
+  
+    new Trigger(() -> driverController.getPOV() == 0)
+    .toggleOnTrue(new RunCommand(() -> {
+      arm.extend(true);
+    }, arm));
+
+    new Trigger(() -> driverController.getPOV() == 180)
+    .toggleOnTrue(new RunCommand(() -> {
+      arm.extend(false);
+    }, arm));
+
+    new Trigger(() -> driverController.getYButton())
+    .whileTrue(new RunCommand(() -> { 
+      colorSensor.determineGamePiece();
+      SmartDashboard.putBoolean("Y Pressed", true);
+     }, colorSensor))
+     .whileFalse(new RunCommand(() -> {
+      SmartDashboard.putBoolean("Y Pressed", false);
+     }, colorSensor));
+
+     new Trigger(() -> operatorController.getPOV() ==270)
+     .whileTrue(new RunCommand(() -> {
+      led.setLED(0.69);
+     }, led));
+
+     new Trigger(() -> operatorController.getPOV() ==90)
+     .whileTrue(new RunCommand(() -> {
+      led.setLED(0.91);
+     }, led));
+
+
+
+    //  new Trigger(() -> operatorController.getPOV() ==180)
+    //  .whileTrue(new RunCommand(() -> {
+    //   led.setLED(0.35);
+    //  }, led));
   }
+
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
@@ -109,3 +153,6 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 }
+
+
+
