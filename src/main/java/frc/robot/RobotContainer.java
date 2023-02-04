@@ -17,6 +17,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Balancing;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.*;
+import frc.robot.commands.Emotes;
 
 public class RobotContainer {
   // THIS IS A PLACEHOLDER
@@ -34,6 +35,7 @@ public class RobotContainer {
   private final XboxController driverController;
   private final XboxController operatorController;
   private final SendableChooser<Command> autoChooser;
+  private final Emotes emote;
 
   private static RobotContainer instance;
 
@@ -45,6 +47,7 @@ public class RobotContainer {
     led = LED.getInstance();
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+    emote = new Emotes(drive, arm);
 
     autoChooser = new SendableChooser<>();
 
@@ -135,6 +138,14 @@ public class RobotContainer {
      .whileFalse(new RunCommand(() -> {
       SmartDashboard.putBoolean("Y Pressed", false);
      }, colorSensor));
+
+     new Trigger(() -> driverController.getXButton())
+     .whileTrue(new RunCommand(() -> { 
+        emote.execute(2);
+      }))
+      .whileFalse(new RunCommand(() -> {
+        emote.stop();
+      }));
 
      new Trigger(() -> operatorController.getPOV() ==270)
      .whileTrue(new RunCommand(() -> {
