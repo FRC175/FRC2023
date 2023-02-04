@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI.Port;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -13,6 +16,9 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static int PCM_PORT = 18;
+
     public static final class ControllerConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_CONTROLLER_PORT = 1;
@@ -21,9 +27,43 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        // PUT DRIVE MOTOR CONSTANTS HERE
+        
+        public static final int RIGHT_MASTER_PORT = 5;
+        public static final int RIGHT_SLAVE_PORT = 4;
+        public static final int LEFT_MASTER_PORT = 3;
+        public static final int LEFT_SLAVE_PORT = 2;
+        public static final int LAT_MOTOR_PORT = 22;
+
+        public static final int LAT_FORWARD_CHANNEL = 1;
+        public static final int LAT_REVERSE_CHANNEL = 0;
+
+        public static final Port GYRO_PORT = SPI.Port.kOnboardCS0;
+        public static final int LIGHT_SENSOR_PORT = 0;
+        
+        public static final double MAX_RPM = 5700.0; 
     }
 
-    // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE
+    public static final class IntakeConstants {
+        public static final int INTAKE_MASTER_PORT = 7;
+        public static final int INTAKE_SLAVE_PORT = 6;
+    }
 
+    public static final class ArmConstants {
+        public static final int TELESCOPE_FORWARD_CHANNEL = 3;
+        public static final int TELESCOPE_REVERSE_CHANNEL = 2;
+    }
+
+    public static final class LEDConstants {
+        public static final int BLINKIN_PORT = 1;
+    }
+
+    public static final class LimelightConstants {
+        public static final double MOUNT_ANGLE = 30.0;
+        public static final double MOUNT_HEIGHT = 10.5;
+    }
+
+    public static final class FieldConstants {
+        public static final double BREAD_TAPE = 118.0;
+        public static final double APRIL_TAPE = 60.5;
+    }
 }
