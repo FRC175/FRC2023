@@ -6,12 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SubsystemBase;
 
 public class RobotContainer {
@@ -19,6 +23,7 @@ public class RobotContainer {
   private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive drive;
+  private final Limelight limelight;
 
   private final XboxController driverController;
   // private final AdvancedXboxController operatorController;
@@ -28,6 +33,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drive = Drive.getInstance();
+    limelight = Limelight.getInstance();
 
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     // operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
@@ -55,6 +61,9 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     //GOAL: INSTEAD OF RUNCOMMAND() HAVE IT BE A ACTUAL COMMAND TO MAKE THIS ONE LINE ONLY!!!
     // drive.setDefaultCommand(new RunCommand(() -> {System.out.println("Drive Command");}, drive));
+    limelight.setDefaultCommand(new InstantCommand(() -> {
+      SmartDashboard.putNumber("distance to april tag", limelight.getDistance(FieldConstants.APRIL_TAPE));
+    }, limelight));
   }
 
   private void configureButtonBindings() {
@@ -63,7 +72,13 @@ public class RobotContainer {
       .toggleOnTrue(new RunCommand(() -> {
         System.out.println("toggle on true");
       }, drive));
+    new Trigger(() -> driverController.getBButton())
+    .toggleOnTrue(new InstantCommand(() -> {
+      limelight.switchPipes();
+      SmartDashboard.putNumber("pipe", limelight.pipe);
+    }, limelight));
   }
+
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));;

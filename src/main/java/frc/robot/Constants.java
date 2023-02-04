@@ -24,6 +24,15 @@ public final class Constants {
         // PUT DRIVE MOTOR CONSTANTS HERE
     }
 
-    // ADD MORE INNER CLASSES WHEN NEW SUBSYSTEM IS MADE
+    public static final class LimelightConstants {
+        public static final double MOUNT_ANGLE = 30.0;
+        public static final double MOUNT_HEIGHT = 10.5;
+    }
+
+    public static final class FieldConstants {
+        public static final double BREAD_TAPE = 118.0;
+        public static final double APRIL_TAPE = 60.5;
+    }
+
 
 }
