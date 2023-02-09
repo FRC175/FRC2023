@@ -9,15 +9,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.commands.auto.DriveIntakeIntegrated;
 import frc.robot.commands.auto.DriveTarmac;
-import frc.robot.commands.auto.IntakePlaceHolder;
+// import frc.robot.commands.auto.DriveIntakeIntegrated;
+// import frc.robot.commands.auto.DriveTarmac;
+// import frc.robot.commands.auto.IntakePlaceHolder;
+// import frc.robot.commands.auto.GyroBalancing;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LightSensor;
+// import frc.robot.subsystems.Intake;
+// import frc.robot.subsystems.LightSensor;
+// import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.SubsystemBase;
 
 public class RobotContainer {
@@ -29,16 +31,18 @@ public class RobotContainer {
   private final XboxController driverController;
   // private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
-  private final LightSensor lightSensor;
-  private final Intake intake;
+  // private final LightSensor lightSensor;
+  // private final Intake intake;
+  // private final ColorSensor colorSensor;
   private static RobotContainer instance;
 
 
   public RobotContainer() {
     drive = Drive.getInstance();
-    lightSensor = LightSensor.getInstance(0);
+    // lightSensor = LightSensor.getInstance(0);
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
-    intake = Intake.getInstance();
+    // intake = Intake.getInstance();
+    // colorSensor = ColorSensor.getInstance();
     // operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
     autoChooser = new SendableChooser<>();
@@ -81,17 +85,19 @@ public class RobotContainer {
       .toggleOnTrue(new RunCommand(() -> {
         System.out.println("toggle on true");
       }, exampleSubsystem));
-      new Trigger(() -> driverController.getBButton())
-      .toggleOnTrue(new RunCommand(() -> {
-        lightSensor.getLightVoltage();
-      }, lightSensor));
+      // new Trigger(() -> driverController.getBButton())
+      // .toggleOnTrue(new RunCommand(() -> {
+      //   lightSensor.getLightVoltage();
+      // }, lightSensor));
   }
 
+
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
-    autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
-    autoChooser.addOption("RunIntake", new IntakePlaceHolder(intake));
-    autoChooser.addOption("DriveThenIntake", new DriveIntakeIntegrated(intake, drive));
+    autoChooser.setDefaultOption("Default", new DriveTarmac(drive));
+    // autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
+    // autoChooser.addOption("RunIntake", new IntakePlaceHolder(intake));
+    // autoChooser.addOption("DriveThenIntake", new DriveIntakeIntegrated(intake, drive));
+    // autoChooser.addOption("Balancing", new GyroBalancing(colorSensor, drive));
     // Put auto modes here when ready!
     
     SmartDashboard.putData(autoChooser);

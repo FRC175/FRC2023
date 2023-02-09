@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.auto;
-import frc.robot.commands.drive.DriveAuto;
 import frc.robot.subsystems.Drive;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -13,7 +12,7 @@ public class DriveTarmac extends SequentialCommandGroup {
   
   public DriveTarmac(Drive drive) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
     addCommands(
-      new DriveAuto(drive, 70)
+      new DriveAutoForSeconds(drive, 3.0, 0.5)
     );
   }
 

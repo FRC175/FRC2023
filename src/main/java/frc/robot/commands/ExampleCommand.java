@@ -13,7 +13,7 @@ public class ExampleCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // CHANGE THIS TO USED SUBSYSTEM
   private final SubsystemBase subsystem;
-
+    
 
   public ExampleCommand(SubsystemBase subsystem) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
     this.subsystem = subsystem;
@@ -24,11 +24,11 @@ public class ExampleCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("\"A\" button was pressed");
+    System.out.println(subsystem);
   }
 
   // Called once the command ends or is interrupted.
