@@ -34,6 +34,18 @@ public final class Constants {
 
         public static final double MAX_RPM = 5700.0; 
     }
+
+    public static final class LimelightConstants {
+        public static final double MOUNT_ANGLE = 4.7;
+        public static final double MOUNT_HEIGHT = 26.5;
+    }
+
+    public static final class FieldConstants {
+        public static final double TAPE = 56.0;
+        public static final double APRIL_GRID = 41.5;
+        public static final double APRIL_STATION = 59.0;
+    }
+
 }
 
     // public static final class IntakeConstants {

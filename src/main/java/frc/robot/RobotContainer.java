@@ -8,15 +8,19 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.auto.DriveTarmac;
+import frc.robot.commands.auto.DriveToDist;
 // import frc.robot.commands.auto.DriveIntakeIntegrated;
 // import frc.robot.commands.auto.DriveTarmac;
 // import frc.robot.commands.auto.IntakePlaceHolder;
 // import frc.robot.commands.auto.GyroBalancing;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shuffleboard;
 // import frc.robot.subsystems.Intake;
 // import frc.robot.subsystems.LightSensor;
 // import frc.robot.subsystems.ColorSensor;
@@ -27,6 +31,8 @@ public class RobotContainer {
   private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive drive; 
+  private final Shuffleboard shuffleboard;
+  private final Limelight limelight;
 
   private final XboxController driverController;
   // private final AdvancedXboxController operatorController;
@@ -39,6 +45,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     drive = Drive.getInstance();
+    shuffleboard = Shuffleboard.getInstance();
+    limelight = Limelight.getInstance();
     // lightSensor = LightSensor.getInstance(0);
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     // intake = Intake.getInstance();
@@ -76,15 +84,23 @@ public class RobotContainer {
       drive.accelDrive(throttle, turn);
     }, drive));
 
+    shuffleboard.setDefaultCommand(new InstantCommand(() -> {
+      shuffleboard.logLimelight();
+    }, shuffleboard));
+
 
   }
 
   private void configureButtonBindings() {
     // PUT A COMMAND HERE SIMILAR TO DEFAULT COMMANDS DO IT LIKE THIS
     new Trigger(() -> driverController.getAButton())
-      .toggleOnTrue(new RunCommand(() -> {
-        System.out.println("toggle on true");
-      }, exampleSubsystem));
+      .toggleOnTrue(new InstantCommand(() -> {
+        limelight.switchPipes();
+      }, limelight));
+
+    new Trigger(() -> driverController.getBButton())
+    .whileTrue(new DriveToDist(drive, limelight));
+    
       // new Trigger(() -> driverController.getBButton())
       // .toggleOnTrue(new RunCommand(() -> {
       //   lightSensor.getLightVoltage();
