@@ -13,24 +13,23 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.SetArmPositionHigh;
+import frc.robot.commands.SetArmPositionLow;
+import frc.robot.commands.SetArmPositionMiddle;
 import frc.robot.commands.Drive.DriveAuto;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shuffleboard;
-import frc.robot.subsystems.SubsystemBase;
 
 public class RobotContainer {
-
-  private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
-
   private final Drive drive;
   private final Intake intake;
   private final Arm arm;
-  // private final ColorSensor colorSensor;
+  private final Gripper gripper;
   private final LED led;
   private final Shuffleboard shuffleboard;
   private final Limelight limelight;
@@ -45,7 +44,7 @@ public class RobotContainer {
     drive = Drive.getInstance();
     intake = Intake.getInstance();
     arm = Arm.getInstance();
-    // colorSensor = ColorSensor.getInstance();
+    gripper = Gripper.getInstance();
     led = LED.getInstance();
     shuffleboard = Shuffleboard.getInstance();
     limelight = Limelight.getInstance();
@@ -56,9 +55,7 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
 
     configureDefaultCommands();
-
     configureButtonBindings();
-
     configureAutoChooser();
   }
 
@@ -89,7 +86,14 @@ public class RobotContainer {
     // Unextends Arm
     arm.setDefaultCommand(new RunCommand(() -> {
       arm.extend(false);
+      arm.setBrake(true);
+      arm.setOpenLoop(0.0);
     }, arm));
+
+    //Ungrips Gripper
+    gripper.setDefaultCommand(new RunCommand(() -> {
+      gripper.gripped(false); 
+    }, gripper));
 
     // Stops intake
     intake.setDefaultCommand(new RunCommand(() -> {
@@ -106,7 +110,7 @@ public class RobotContainer {
       shuffleboard.logDrive();
       shuffleboard.logLimelight();
       shuffleboard.logArm();
-    
+      shuffleboard.logGripper();
     }, shuffleboard));
   }
 
@@ -117,11 +121,30 @@ public class RobotContainer {
       arm.extend(true);
     }, arm));
 
+    // Operator X: Grip Gripper
+    new Trigger(() -> operatorController.getXButton())
+    .whileTrue(new RunCommand(() -> {
+    gripper.gripped(true);
+    }, gripper));
+
     // Operator B: Run Intake
     new Trigger(() -> operatorController.getBButton())
     .whileTrue(new RunCommand(() -> {
       intake.setOpenLoop(0.3);
     }, intake));
+
+    // Driver D-Pad Right: Arm to Low setpoint
+    new Trigger(() -> driverController.getPOV() == 90)
+    .onTrue(new SetArmPositionLow(arm));
+
+    // Driver D-Pad Left: Arm to Low setpoint
+    new Trigger(() -> driverController.getPOV() == 270)
+    .onTrue(new SetArmPositionMiddle(arm));
+
+    //Driver D-Pad Up: Arm to High setpoint
+    new Trigger(() -> driverController.getPOV() == 0)
+    .onTrue(new SetArmPositionHigh(arm));
+
 
     // Operator Left: Yellow LED
     new Trigger(() -> operatorController.getPOV() == 270)
@@ -140,6 +163,8 @@ public class RobotContainer {
     .toggleOnTrue(new InstantCommand(() -> {
       limelight.switchPipes();
     }, limelight));
+
+
   }
 
   private void configureAutoChooser() {

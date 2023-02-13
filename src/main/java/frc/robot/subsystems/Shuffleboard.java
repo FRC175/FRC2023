@@ -12,13 +12,14 @@ public class Shuffleboard extends SubsystemBase {
     private ColorSensor colorSensor;
     private Limelight limelight;
     private Arm arm;
-    
+    private Gripper gripper;
 
     private Shuffleboard() {
         drive = Drive.getInstance();
         colorSensor = ColorSensor.getInstance();
         limelight = Limelight.getInstance();
         arm = Arm.getInstance();
+        gripper = Gripper.getInstance();
     }
 
     public static Shuffleboard getInstance() {
@@ -48,6 +49,12 @@ public class Shuffleboard extends SubsystemBase {
 
     public void logArm() {
         SmartDashboard.putBoolean("Is Telescope?", arm.getTeleShiftState());
+        SmartDashboard.putNumber("Encoder value", arm.getEncoderCount());
+        SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
+    } 
+    
+    public void logGripper() {
+        SmartDashboard.putBoolean("Is Gripping?", gripper.getGripShiftState());
     }
 
     public void logLimelight() {
