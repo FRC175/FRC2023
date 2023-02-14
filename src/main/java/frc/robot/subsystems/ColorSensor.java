@@ -48,6 +48,7 @@ public class ColorSensor extends SubsystemBase{
     }
 
     public Color getColor() {
+       
         return colorSensor.getColor();
     }
 
@@ -64,6 +65,14 @@ public class ColorSensor extends SubsystemBase{
         if (match.confidence > 0.95 && match.color == yellow) return 'y';
         else if (match.confidence > 0.7 && match.color == purple) return 'p';
         else return 'n';
+    }
+
+    public boolean isGP() {
+        ColorMatchResult match = colorMatchGamePiece.matchClosestColor(colorSensor.getColor());
+        
+        if (match.confidence > 0.95 && match.color == yellow) return true;
+        else if (match.confidence > 0.7 && match.color == purple) return true;
+        else return false;
     }
 
 

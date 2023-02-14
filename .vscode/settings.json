@@ -25,5 +25,7 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "files.autoSave": "afterDelay",
+  "workbench.sideBar.location": "right"
 }

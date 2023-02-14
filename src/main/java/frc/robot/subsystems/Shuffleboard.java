@@ -12,6 +12,7 @@ public class Shuffleboard extends SubsystemBase {
     private ColorSensor colorSensor;
     private Limelight limelight;
     private Arm arm;
+    private Intake intake; 
     
 
     private Shuffleboard() {
@@ -19,6 +20,7 @@ public class Shuffleboard extends SubsystemBase {
         colorSensor = ColorSensor.getInstance();
         limelight = Limelight.getInstance();
         arm = Arm.getInstance();
+        intake = Intake.getInstance(); 
     }
 
     public static Shuffleboard getInstance() {
@@ -53,6 +55,10 @@ public class Shuffleboard extends SubsystemBase {
     public void logLimelight() {
         SmartDashboard.putNumber("Distance", limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_TAPE : FieldConstants.BREAD_TAPE));
         SmartDashboard.putNumber("Pipe", limelight.pipe);
+    }
+
+    public void logIntake() {
+        SmartDashboard.putNumber("Counts", intake.getDeployCounts()); 
     }
 
     @Override
