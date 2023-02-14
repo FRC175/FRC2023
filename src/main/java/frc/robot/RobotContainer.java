@@ -14,27 +14,27 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.SetArmPositionHigh;
+import frc.robot.commands.SetArmPositionLow;
+import frc.robot.commands.SetArmPositionMiddle;
 import frc.robot.commands.Drive.DriveAuto;
 import frc.robot.commands.Intake.DeployIntake;
 import frc.robot.commands.Intake.ColorSusan;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.LazySusan;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shuffleboard;
-import frc.robot.subsystems.SubsystemBase;
 
 public class RobotContainer {
-
-  private final SubsystemBase exampleSubsystem = new SubsystemBase(){public void resetSensors() {};};
-
   private final Drive drive;
   private final Intake intake;
   private final Arm arm;
   private final LazySusan lazySusan;
+  private final Gripper gripper;
   private final ColorSensor colorSensor;
   private final LED led;
   private final Shuffleboard shuffleboard;
@@ -51,6 +51,7 @@ public class RobotContainer {
     intake = Intake.getInstance();
     arm = Arm.getInstance();
     lazySusan = LazySusan.getInstance();
+    gripper = Gripper.getInstance();
     colorSensor = ColorSensor.getInstance();
     led = LED.getInstance();
     shuffleboard = Shuffleboard.getInstance();
@@ -64,9 +65,7 @@ public class RobotContainer {
     CameraServer.startAutomaticCapture();
 
     configureDefaultCommands();
-
     configureButtonBindings();
-
     configureAutoChooser();
   }
 
@@ -98,7 +97,14 @@ public class RobotContainer {
     // Unextends Arm
     arm.setDefaultCommand(new RunCommand(() -> {
       arm.extend(false);
+      arm.setBrake(true);
+      arm.setOpenLoop(0.0);
     }, arm));
+
+    //Ungrips Gripper
+    gripper.setDefaultCommand(new RunCommand(() -> {
+      gripper.gripped(false); 
+    }, gripper));
 
     // Stops intake
     intake.setDefaultCommand(new DeployIntake(intake, false));
@@ -119,7 +125,7 @@ public class RobotContainer {
       shuffleboard.logLimelight();
       shuffleboard.logArm();
       shuffleboard.logIntake();
-    
+      shuffleboard.logGripper();
     }, shuffleboard));
   }
 
@@ -130,6 +136,12 @@ public class RobotContainer {
       arm.extend(true);
     }, arm));
 
+    // Operator X: Grip Gripper
+    new Trigger(() -> operatorController.getXButton())
+    .whileTrue(new RunCommand(() -> {
+    gripper.gripped(true);
+    }, gripper));
+
     // Operator B: Run Intake
     new Trigger(() -> operatorController.getBButton())
     .whileTrue(new RunCommand(() -> {
@@ -138,11 +150,24 @@ public class RobotContainer {
 
     // Operator X: Deploy Intake 
     new Trigger(() -> operatorController.getXButton())
-    .whileTrue(new DeployIntake(intake, false)); 
+    .whileTrue(new DeployIntake(intake, false));
+     
+    // Driver D-Pad Right: Arm to Low setpoint
+    new Trigger(() -> driverController.getPOV() == 90)
+    .onTrue(new SetArmPositionLow(arm));
 
     // Operator A: Retract Intake 
     new Trigger(() -> operatorController.getAButton())
-    .whileTrue(new DeployIntake(intake, true));  
+    .whileTrue(new DeployIntake(intake, true)); 
+     
+    // Driver D-Pad Left: Arm to Low setpoint
+    new Trigger(() -> driverController.getPOV() == 270)
+    .onTrue(new SetArmPositionMiddle(arm));
+
+    //Driver D-Pad Up: Arm to High setpoint
+    new Trigger(() -> driverController.getPOV() == 0)
+    .onTrue(new SetArmPositionHigh(arm));
+
 
     // Operator Left: Yellow LED
     new Trigger(() -> operatorController.getPOV() == 270)
@@ -161,7 +186,7 @@ public class RobotContainer {
     .toggleOnTrue(new InstantCommand(() -> {
       limelight.switchPipes();
     }, limelight));
-  
+
 
    // Operator Right Bumper: Spin LazySusan
    new Trigger(() -> operatorController.getRightBumper())

@@ -57,6 +57,17 @@ public final class Constants {
     public static final class ArmConstants {
         public static final int TELESCOPE_FORWARD_CHANNEL = 4;
         public static final int TELESCOPE_REVERSE_CHANNEL = 5;
+        public static final int ARM_ROTATER_PORT = 10; 
+        public static final int BRAKE_CHANNEL = 6;
+        //FIX NUMBER LATER
+        public static final int LOW_ENCODER_COUNT = 5;
+        public static final int MEDIUM_ENCODER_COUNT = 15;
+        public static final int HIGH_ENCODER_COUNT = 25;
+    }
+
+    public static final class GripperConstants {
+        public static final int GRIPPER_FORWARD_CHANNEL =2;
+        public static final int GRIPPER_REVERSE_CHANNEL = 3;
     }
 
     public static final class LEDConstants {
