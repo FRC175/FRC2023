@@ -59,6 +59,8 @@ public class Intake extends SubsystemBase {
         deploySlave.configFactoryDefault();
         deploySlave.setInverted(false);
         deploySlave.follow(deployMaster); 
+
+        deployMaster.configSelectedFeedbackSensor(FeedbackDevice.SensorSum);
     }
    
     public void setRunOpenLoop(double demand) {
@@ -70,7 +72,7 @@ public class Intake extends SubsystemBase {
     }
 
     public double getDeployCounts() {
-        return deployMaster.getSensorCollection().getQuadraturePosition();
+        return deployMaster.getSelectedSensorPosition();
     } 
 
     @Override

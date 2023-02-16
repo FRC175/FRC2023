@@ -20,6 +20,7 @@ import frc.robot.commands.SetArmPositionMiddle;
 import frc.robot.commands.Drive.DriveAuto;
 import frc.robot.commands.Intake.DeployIntake;
 import frc.robot.commands.Intake.ColorSusan;
+import frc.robot.commands.AutoMode.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.LazySusan;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shuffleboard;
+import frc.robot.subsystems.ColorSensor; 
 
 public class RobotContainer {
   private final Drive drive;
@@ -107,7 +109,7 @@ public class RobotContainer {
     }, gripper));
 
     // Stops intake
-    intake.setDefaultCommand(new DeployIntake(intake, false));
+    // intake.setDefaultCommand(new DeployIntake(intake, false));
 
     // Sets LED to gray
     led.setDefaultCommand(new RunCommand(() -> {
@@ -148,16 +150,16 @@ public class RobotContainer {
       intake.setRunOpenLoop(0.3);
     }, intake));
 
-    // Operator X: Deploy Intake 
-    new Trigger(() -> operatorController.getXButton())
+    // Driver X: Deploy Intake 
+    new Trigger(() -> driverController.getXButton())
     .whileTrue(new DeployIntake(intake, false));
      
     // Driver D-Pad Right: Arm to Low setpoint
     new Trigger(() -> driverController.getPOV() == 90)
     .onTrue(new SetArmPositionLow(arm));
 
-    // Operator A: Retract Intake 
-    new Trigger(() -> operatorController.getAButton())
+    // Driver Y: Retract Intake 
+    new Trigger(() -> driverController.getYButton())
     .whileTrue(new DeployIntake(intake, true)); 
      
     // Driver D-Pad Left: Arm to Low setpoint
@@ -210,7 +212,8 @@ public class RobotContainer {
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
     autoChooser.addOption("Drive Tarmac", new DriveAuto(drive, 70));
-
+    autoChooser.addOption("Drive and Intake", new DriveIntake(intake, drive)); 
+    autoChooser.addOption("Low node Score", new PlaceConePlaceHolder(arm, drive, intake)); 
     SmartDashboard.putData(autoChooser);
   }
 
