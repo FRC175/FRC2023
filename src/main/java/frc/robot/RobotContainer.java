@@ -43,7 +43,6 @@ public class RobotContainer {
   private final LED led;
   private final Shuffleboard shuffleboard;
   private final Limelight limelight;
-  private final ColorSensor colorSensor;
 
   private final XboxController driverController;
   private final XboxController operatorController;
@@ -61,7 +60,6 @@ public class RobotContainer {
     led = LED.getInstance();
     shuffleboard = Shuffleboard.getInstance();
     limelight = Limelight.getInstance();
-    colorSensor = ColorSensor.getInstance();
 
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
@@ -218,7 +216,8 @@ public class RobotContainer {
     autoChooser.addOption("Drive Tarmac", new DriveAuto(drive, 70));
     autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
     autoChooser.addOption("Drive and Intake", new DriveIntake(intake, drive)); 
-    autoChooser.addOption("Low node Score", new PlaceConePlaceHolder(arm, drive, intake));     autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
+    autoChooser.addOption("Low node Score", new PlaceConePlaceHolder(arm, drive, intake));     
+    autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
 
     SmartDashboard.putData(autoChooser);
   }
