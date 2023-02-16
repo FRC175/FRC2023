@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,12 +19,15 @@ import frc.robot.commands.SetArmPositionHigh;
 import frc.robot.commands.SetArmPositionLow;
 import frc.robot.commands.SetArmPositionMiddle;
 import frc.robot.commands.Drive.DriveAuto;
+import frc.robot.commands.Intake.DeployIntake;
+import frc.robot.commands.Intake.ColorSusan;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.LazySusan;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shuffleboard;
 
@@ -31,7 +35,9 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Arm arm;
+  private final LazySusan lazySusan;
   private final Gripper gripper;
+  private final ColorSensor colorSensor;
   private final LED led;
   private final Shuffleboard shuffleboard;
   private final Limelight limelight;
@@ -47,7 +53,9 @@ public class RobotContainer {
     drive = Drive.getInstance();
     intake = Intake.getInstance();
     arm = Arm.getInstance();
+    lazySusan = LazySusan.getInstance();
     gripper = Gripper.getInstance();
+    colorSensor = ColorSensor.getInstance();
     led = LED.getInstance();
     shuffleboard = Shuffleboard.getInstance();
     limelight = Limelight.getInstance();
@@ -57,6 +65,8 @@ public class RobotContainer {
     operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
     autoChooser = new SendableChooser<>();
+
+    CameraServer.startAutomaticCapture();
 
     configureDefaultCommands();
     configureButtonBindings();
@@ -84,6 +94,7 @@ public class RobotContainer {
         drive.latDrive(0);
         drive.extendLat(false);
         drive.arcadeDrive(throttle, turn);
+        
       }
     }, drive));
 
@@ -100,20 +111,24 @@ public class RobotContainer {
     }, gripper));
 
     // Stops intake
-    intake.setDefaultCommand(new RunCommand(() -> {
-      intake.setOpenLoop(0);
-    }, intake));
+    intake.setDefaultCommand(new DeployIntake(intake, false));
 
     // Sets LED to gray
     led.setDefaultCommand(new RunCommand(() -> {
       led.setLED(0.95);
     }, led));
+    
+    lazySusan.setDefaultCommand(new RunCommand(() -> {
+      lazySusan.susanSpin(0);
+    },lazySusan));
+    
 
     shuffleboard.setDefaultCommand(new RunCommand(() -> {
       shuffleboard.logColorSensor();
       shuffleboard.logDrive();
       shuffleboard.logLimelight();
       shuffleboard.logArm();
+      shuffleboard.logIntake();
       shuffleboard.logGripper();
     }, shuffleboard));
   }
@@ -134,13 +149,21 @@ public class RobotContainer {
     // Operator B: Run Intake
     new Trigger(() -> operatorController.getBButton())
     .whileTrue(new RunCommand(() -> {
-      intake.setOpenLoop(0.3);
+      intake.setRunOpenLoop(0.3);
     }, intake));
 
+    // Operator X: Deploy Intake 
+    new Trigger(() -> operatorController.getXButton())
+    .whileTrue(new DeployIntake(intake, false));
+     
     // Driver D-Pad Right: Arm to Low setpoint
     new Trigger(() -> driverController.getPOV() == 90)
     .onTrue(new SetArmPositionLow(arm));
 
+    // Operator A: Retract Intake 
+    new Trigger(() -> operatorController.getAButton())
+    .whileTrue(new DeployIntake(intake, true)); 
+     
     // Driver D-Pad Left: Arm to Low setpoint
     new Trigger(() -> driverController.getPOV() == 270)
     .onTrue(new SetArmPositionMiddle(arm));
@@ -169,7 +192,24 @@ public class RobotContainer {
     }, limelight));
 
 
+   // Operator Right Bumper: Spin LazySusan
+   new Trigger(() -> operatorController.getRightBumper())
+   .whileTrue(new RunCommand(() -> {
+     lazySusan.susanSpin(0.5);
+   }, lazySusan));
+
+   // Operator Left Bumpoer: Spin LazySusan
+   new Trigger(() -> operatorController.getLeftBumper())
+   .whileTrue(new RunCommand(() -> {
+      lazySusan.susanSpin(-0.5);
+   }, lazySusan));
+
+   // Operator Down: cColor-Dependant Spin Lazy Susan
+   new Trigger(() -> operatorController.getPOV() == 180)
+   .whileTrue(new ColorSusan(colorSensor, lazySusan));
+
   }
+ 
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));

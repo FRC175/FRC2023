@@ -44,8 +44,14 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_MASTER_PORT = 7;
-        public static final int INTAKE_SLAVE_PORT = 6;
+        public static final int INTAKE_MASTER_PORT = 6;
+        public static final int INTAKE_SLAVE_PORT = 7;
+        public static final int DEPLOY_MASTER_PORT = 8;
+        public static final int DEPLOY_SLAVE_PORT = 9; 
+    }
+
+    public static final class LazySusanConstants {
+        public static final int LAZY_SUSAN_PORT = 11; 
     }
 
     public static final class ArmConstants {
