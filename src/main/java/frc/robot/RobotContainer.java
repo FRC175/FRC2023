@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.DriveThenBalance;
 import frc.robot.commands.SetArmPositionHigh;
 import frc.robot.commands.SetArmPositionLow;
 import frc.robot.commands.SetArmPositionMiddle;
 import frc.robot.commands.Drive.DriveAuto;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
@@ -33,6 +35,7 @@ public class RobotContainer {
   private final LED led;
   private final Shuffleboard shuffleboard;
   private final Limelight limelight;
+  private final ColorSensor colorSensor;
 
   private final XboxController driverController;
   private final XboxController operatorController;
@@ -48,6 +51,7 @@ public class RobotContainer {
     led = LED.getInstance();
     shuffleboard = Shuffleboard.getInstance();
     limelight = Limelight.getInstance();
+    colorSensor = ColorSensor.getInstance();
 
     driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
@@ -170,6 +174,7 @@ public class RobotContainer {
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
     autoChooser.addOption("Drive Tarmac", new DriveAuto(drive, 70));
+    autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
 
     SmartDashboard.putData(autoChooser);
   }

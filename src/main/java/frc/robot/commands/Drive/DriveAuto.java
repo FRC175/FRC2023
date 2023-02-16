@@ -1,4 +1,5 @@
 package frc.robot.commands.Drive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
 
@@ -22,12 +23,15 @@ public class DriveAuto extends CommandBase {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(counts < 0 ? - 0.75 : 0.75, 0);
+        SmartDashboard.putBoolean("Driving", true);
+        drive.arcadeDrive(counts < 0 ? -0.2 : 0.2, 0);
     }
 
     @Override
     public void end(boolean interrupted) {
         drive.arcadeDrive(0, 0);
+        SmartDashboard.putBoolean("Driving", false);
+
     }
 
     @Override

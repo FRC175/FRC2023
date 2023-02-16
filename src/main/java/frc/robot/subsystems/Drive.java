@@ -126,6 +126,6 @@ public final class Drive extends SubsystemBase {
 
     @Override
     public void resetSensors() {
-        gyro.calibrate();
+        gyro.reset();
     }
 }
