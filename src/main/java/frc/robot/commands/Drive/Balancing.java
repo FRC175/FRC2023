@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
@@ -10,24 +10,20 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Balancing extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-    // CHANGE THIS TO USED SUBSYSTEM
     private final ColorSensor colorSensor;
     private final Drive drive;
 
-    public Balancing(ColorSensor colorSensor, Drive drive) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
+    public Balancing(ColorSensor colorSensor, Drive drive) {
         this.colorSensor = colorSensor;
         this.drive = drive;
-        // ADD SUBSYSTEM TO REQUIREMENTS
         addRequirements(colorSensor, drive);
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         drive.resetSensors();
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         if (drive.getAngle() > 35.0) {
@@ -40,7 +36,6 @@ public class Balancing extends CommandBase {
         SmartDashboard.putBoolean("is Balancing", true);
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         drive.setOpenLoop(0.0, 0.0);
@@ -48,7 +43,6 @@ public class Balancing extends CommandBase {
 
     } 
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         if (colorSensor.determineRB()) {

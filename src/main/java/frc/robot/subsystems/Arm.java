@@ -30,6 +30,7 @@ public class Arm extends SubsystemBase{
         brakeSet = false;
         state = ArmState.LOW;
         extend(false);
+        setOpenLoop(0);
      
         configureSparks();
 

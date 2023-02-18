@@ -32,10 +32,6 @@ public final class Constants {
         public static final int RIGHT_SLAVE_PORT = 5;
         public static final int LEFT_MASTER_PORT = 2;
         public static final int LEFT_SLAVE_PORT = 3;
-        public static final int LAT_MOTOR_PORT = 22;
-
-        public static final int LAT_FORWARD_CHANNEL = 1;
-        public static final int LAT_REVERSE_CHANNEL = 0;
 
         public static final Port GYRO_PORT = SPI.Port.kOnboardCS0;
         public static final int LIGHT_SENSOR_PORT = 0;
@@ -43,23 +39,11 @@ public final class Constants {
         public static final double MAX_RPM = 5700.0; 
     }
 
-    public static final class IntakeConstants {
-        public static final int INTAKE_MASTER_PORT = 6;
-        public static final int INTAKE_SLAVE_PORT = 7;
-        public static final int DEPLOY_MASTER_PORT = 8;
-        public static final int DEPLOY_SLAVE_PORT = 9; 
-    }
-
-    public static final class LazySusanConstants {
-        public static final int LAZY_SUSAN_PORT = 11; 
-    }
-
     public static final class ArmConstants {
         public static final int TELESCOPE_FORWARD_CHANNEL = 4;
         public static final int TELESCOPE_REVERSE_CHANNEL = 5;
         public static final int ARM_ROTATER_PORT = 10; 
         public static final int BRAKE_CHANNEL = 6;
-        //FIX NUMBER LATER
         public static final int LOW_ENCODER_COUNT = 5;
         public static final int MEDIUM_ENCODER_COUNT = 15;
         public static final int HIGH_ENCODER_COUNT = 25;

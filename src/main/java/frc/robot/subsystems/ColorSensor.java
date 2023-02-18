@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorMatchResult;
@@ -38,6 +37,10 @@ public class ColorSensor extends SubsystemBase{
         return instance;
     }
 
+    public enum GamePiece {
+        CUBE, CONE, NONE;
+    }
+
     private void configureColorMatches() {
         colorMatch.addColorMatch(blue);
         colorMatch.addColorMatch(red);
@@ -48,7 +51,6 @@ public class ColorSensor extends SubsystemBase{
     }
 
     public Color getColor() {
-       
         return colorSensor.getColor();
     }
 
@@ -59,12 +61,12 @@ public class ColorSensor extends SubsystemBase{
         else return false;
     }
 
-    public char determineGP() {
+    public GamePiece determineGP() {
         ColorMatchResult match = colorMatchGamePiece.matchClosestColor(colorSensor.getColor());
 
-        if (match.confidence > 0.95 && match.color == yellow) return 'y';
-        else if (match.confidence > 0.7 && match.color == purple) return 'p';
-        else return 'n';
+        if (match.confidence > 0.95 && match.color == yellow) return GamePiece.CONE;
+        else if (match.confidence > 0.7 && match.color == purple) return GamePiece.CUBE;
+        else return GamePiece.NONE;
     }
 
     public boolean isGP() {

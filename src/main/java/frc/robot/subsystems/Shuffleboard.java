@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.LimelightConstants;
+import frc.robot.subsystems.ColorSensor.GamePiece;
 
 public class Shuffleboard extends SubsystemBase {
 
@@ -12,16 +12,16 @@ public class Shuffleboard extends SubsystemBase {
     private ColorSensor colorSensor;
     private Limelight limelight;
     private Arm arm;
-    private Intake intake; 
     private Gripper gripper;
+    private LED led;
 
     private Shuffleboard() {
         drive = Drive.getInstance();
         colorSensor = ColorSensor.getInstance();
         limelight = Limelight.getInstance();
         arm = Arm.getInstance();
-        intake = Intake.getInstance(); 
         gripper = Gripper.getInstance();
+        led = LED.getInstance();
     }
 
     public static Shuffleboard getInstance() {
@@ -38,15 +38,13 @@ public class Shuffleboard extends SubsystemBase {
 
         SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
         SmartDashboard.putNumber("Light Level (V)", drive.getLightVoltage());
-
-        SmartDashboard.putBoolean("Is Lat?", drive.getLatShiftState());
     }
 
     public void logColorSensor() {
         SmartDashboard.putString("Current Color (rgb)", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
         SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
-        SmartDashboard.putBoolean("Is Cone?", colorSensor.determineGP() == 'y');
-        SmartDashboard.putBoolean("Is Cube?", colorSensor.determineGP() == 'p');
+        SmartDashboard.putBoolean("Is Cone?", colorSensor.determineGP() == GamePiece.CONE);
+        SmartDashboard.putBoolean("Is Cube?", colorSensor.determineGP() == GamePiece.CUBE);
     }
 
     public void logArm() {
@@ -64,8 +62,8 @@ public class Shuffleboard extends SubsystemBase {
         SmartDashboard.putNumber("Pipe", limelight.pipe);
     }
 
-    public void logIntake() {
-        SmartDashboard.putNumber("Counts", intake.getDeployCounts()); 
+    public void logLED() {
+        SmartDashboard.putNumber("LED Color", led.getColor());
     }
 
     @Override
