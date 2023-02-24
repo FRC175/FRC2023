@@ -38,6 +38,8 @@ public class Shuffleboard extends SubsystemBase {
 
         SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
         SmartDashboard.putNumber("Light Level (V)", drive.getLightVoltage());
+
+        SmartDashboard.putBoolean("Is Lat?", drive.getLatShiftState());
     }
 
     public void logColorSensor() {
@@ -58,7 +60,7 @@ public class Shuffleboard extends SubsystemBase {
     }
 
     public void logLimelight() {
-        SmartDashboard.putNumber("Distance", limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_TAPE : FieldConstants.BREAD_TAPE));
+        SmartDashboard.putNumber("Distance", limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
         SmartDashboard.putNumber("Pipe", limelight.pipe);
     }
 

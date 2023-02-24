@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.LEDConstants;
+import java.awt.Color;
+
 
 public final class LED extends SubsystemBase {
 
@@ -49,6 +53,7 @@ public final class LED extends SubsystemBase {
     private LED() {
         blinkin = new Spark(LEDConstants.BLINKIN_PORT);
         setLED(colorCycle.getColorCode());
+        sendColorToShuffleboard();
     }
 
     public void setLED(double value) { 
@@ -65,6 +70,21 @@ public final class LED extends SubsystemBase {
     public void cycleColor(boolean forward) {
         colorCycle.cycle(forward);
         setLED(colorCycle.getColorCode());
+    }
+
+    public void sendColorToShuffleboard() {
+        SmartDashboard.putData(new Sendable() {
+
+            @Override
+            public void initSendable(SendableBuilder builder) {
+              builder.addDoubleProperty("ColorWidget", this::get, null);
+            }
+      
+            double get() {
+              return getColor();
+            }
+            
+        });
     }
 
     @Override

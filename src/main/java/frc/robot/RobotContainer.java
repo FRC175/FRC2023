@@ -76,7 +76,16 @@ public class RobotContainer {
     drive.setDefaultCommand(new RunCommand(() -> {
       double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
       double turn = -1 * driverController.getLeftX();
-      drive.accelDrive(throttle, turn);
+      if (driverController.getRightBumper()) {
+        drive.extendLat(true);
+        drive.latDrive(throttle);
+        drive.arcadeDrive(0, 0);
+      } else {
+        drive.latDrive(0);
+        drive.extendLat(false);
+        drive.arcadeDrive(throttle, turn);
+        
+      }
     }, drive));
 
     // Unextends Arm
@@ -91,6 +100,7 @@ public class RobotContainer {
       shuffleboard.logLimelight();
       shuffleboard.logArm();
       shuffleboard.logGripper();
+      shuffleboard.logLED();
     }, shuffleboard));
   }
 

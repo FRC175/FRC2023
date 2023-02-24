@@ -32,6 +32,10 @@ public final class Constants {
         public static final int RIGHT_SLAVE_PORT = 5;
         public static final int LEFT_MASTER_PORT = 2;
         public static final int LEFT_SLAVE_PORT = 3;
+        public static final int LAT_MOTOR_PORT = 22;
+
+        public static final int LAT_FORWARD_CHANNEL = 1;
+        public static final int LAT_REVERSE_CHANNEL = 0;
 
         public static final Port GYRO_PORT = SPI.Port.kOnboardCS0;
         public static final int LIGHT_SENSOR_PORT = 0;
@@ -59,12 +63,13 @@ public final class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final double MOUNT_ANGLE = 30.0;
-        public static final double MOUNT_HEIGHT = 10.5;
+        public static final double MOUNT_ANGLE = 4.7;
+        public static final double MOUNT_HEIGHT = 26.5;
     }
 
     public static final class FieldConstants {
-        public static final double BREAD_TAPE = 118.0;
-        public static final double APRIL_TAPE = 60.5;
+        public static final double TAPE = 56.0;
+        public static final double APRIL_GRID = 41.5;
+        public static final double APRIL_STATION = 59.0;
     }
 }

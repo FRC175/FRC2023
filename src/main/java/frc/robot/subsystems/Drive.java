@@ -2,9 +2,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 
@@ -16,6 +23,10 @@ public final class Drive extends SubsystemBase {
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final RelativeEncoder leftMasterEncoder, rightMasterEncoder; 
     private final  DriveHelper driveHelper;
+
+    private final TalonSRX latMotor;
+    private final DoubleSolenoid latShift;
+    private boolean latExtended;
 
     private final ADXRS450_Gyro gyro;
     private final AnalogPotentiometer lightSensor;
@@ -30,6 +41,11 @@ public final class Drive extends SubsystemBase {
         rightMasterEncoder = rightMaster.getEncoder();
 
         driveHelper = new DriveHelper(leftMaster, rightMaster, leftMasterEncoder, rightMasterEncoder);
+
+        latMotor = new TalonSRX(DriveConstants.LAT_MOTOR_PORT);
+        latShift = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, DriveConstants.LAT_FORWARD_CHANNEL, DriveConstants.LAT_REVERSE_CHANNEL);
+        latExtended = false;
+        extendLat(false);
 
         gyro = new ADXRS450_Gyro(DriveConstants.GYRO_PORT);
         lightSensor = new AnalogPotentiometer(DriveConstants.LIGHT_SENSOR_PORT);
@@ -74,6 +90,19 @@ public final class Drive extends SubsystemBase {
 
     public void accelDrive(double throttle, double turn) {
         driveHelper.accelDrive(throttle, turn);
+    }
+
+    public void latDrive(double speed) {
+        latMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public boolean getLatShiftState() {
+        return latExtended;
+    }
+
+    public void extendLat(boolean extend) {
+        latExtended = extend;
+        latShift.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
     
     public double[] getMasterRPMs() {
