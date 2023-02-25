@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
@@ -29,7 +28,7 @@ public final class Drive extends SubsystemBase {
     private boolean latExtended;
 
     private final ADXRS450_Gyro gyro;
-    private final AnalogPotentiometer lightSensor;
+    // private final AnalogPotentiometer lightSensor;
     
     private Drive() {
         leftMaster = new CANSparkMax(DriveConstants.LEFT_MASTER_PORT, MotorType.kBrushless);
@@ -48,7 +47,7 @@ public final class Drive extends SubsystemBase {
         extendLat(false);
 
         gyro = new ADXRS450_Gyro(DriveConstants.GYRO_PORT);
-        lightSensor = new AnalogPotentiometer(DriveConstants.LIGHT_SENSOR_PORT);
+        // lightSensor = new AnalogPotentiometer(DriveConstants.LIGHT_SENSOR_PORT);
 
         configureSparks();
 
@@ -110,17 +109,18 @@ public final class Drive extends SubsystemBase {
         return rpm;
     }
 
-    public double getRightCounts() {
-        return rightMasterEncoder.getPosition();
+    public double[] getMasterPositions() {
+        double[] pos = {rightMasterEncoder.getPosition(), leftMasterEncoder.getPosition()};
+        return pos;
     }
 
     public double getAngle() {
         return gyro.getAngle();
     }
 
-    public double getLightVoltage() {
-        return 100 * lightSensor.get();
-    }
+    // public double getLightVoltage() {
+    //     return 100 * lightSensor.get();
+    // }
 
     @Override
     public void resetSensors() {

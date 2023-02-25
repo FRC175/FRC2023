@@ -8,7 +8,6 @@ package frc.robot.commands.drive;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -33,7 +32,7 @@ public class DriveToDist extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.arcadeDrive(0.2, 0);
+    drive.accelDrive(0.4, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -45,12 +44,12 @@ public class DriveToDist extends CommandBase {
   public boolean isFinished() {
     if (limelight.pipe == 0) {
         if (limelight.getDistance(FieldConstants.APRIL_GRID) > 95 && limelight.getDistance(FieldConstants.APRIL_GRID) < 115) {
-            drive.arcadeDrive(0, 0);
+            drive.setOpenLoop(0, 0);
             return true;
         }
     } else {
         if (limelight.getDistance(FieldConstants.TAPE) > 95 && limelight.getDistance(FieldConstants.TAPE) < 115) {
-            drive.arcadeDrive(0, 0);
+            drive.setOpenLoop(0, 0);
             return true;
         }
     }

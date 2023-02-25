@@ -46,8 +46,8 @@ public class ColorSensor extends SubsystemBase{
         colorMatch.addColorMatch(red);
         colorMatchGamePiece.addColorMatch(yellow);
         colorMatchGamePiece.addColorMatch(purple);
-        colorMatchGamePiece.addColorMatch(blue);
-        colorMatchGamePiece.addColorMatch(red);
+        // colorMatchGamePiece.addColorMatch(blue);
+        // colorMatchGamePiece.addColorMatch(red);
     }
 
     public Color getColor() {
@@ -68,15 +68,6 @@ public class ColorSensor extends SubsystemBase{
         else if (match.confidence > 0.7 && match.color == purple) return GamePiece.CUBE;
         else return GamePiece.NONE;
     }
-
-    public boolean isGP() {
-        ColorMatchResult match = colorMatchGamePiece.matchClosestColor(colorSensor.getColor());
-        
-        if (match.confidence > 0.95 && match.color == yellow) return true;
-        else if (match.confidence > 0.7 && match.color == purple) return true;
-        else return false;
-    }
-
 
     public int getDistance() { 
         return colorSensor.getProximity();

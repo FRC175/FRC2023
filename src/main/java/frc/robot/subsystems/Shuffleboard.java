@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.subsystems.ColorSensor.GamePiece;
 
 public class Shuffleboard extends SubsystemBase {
 
@@ -37,21 +36,21 @@ public class Shuffleboard extends SubsystemBase {
         SmartDashboard.putNumber("Left Master Velocity", drive.getMasterRPMs()[1]);
 
         SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
-        SmartDashboard.putNumber("Light Level (V)", drive.getLightVoltage());
+        // SmartDashboard.putNumber("Light Level (V)", drive.getLightVoltage());
 
         SmartDashboard.putBoolean("Is Lat?", drive.getLatShiftState());
     }
 
     public void logColorSensor() {
-        SmartDashboard.putString("Current Color (rgb)", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
+        // SmartDashboard.putString("Current Color (rgb)", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
         SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
-        SmartDashboard.putBoolean("Is Cone?", colorSensor.determineGP() == GamePiece.CONE);
-        SmartDashboard.putBoolean("Is Cube?", colorSensor.determineGP() == GamePiece.CUBE);
+        // SmartDashboard.putBoolean("Is Cone?", colorSensor.determineGP() == GamePiece.CONE);
+        // SmartDashboard.putBoolean("Is Cube?", colorSensor.determineGP() == GamePiece.CUBE);
     }
 
     public void logArm() {
         SmartDashboard.putBoolean("Is Telescope?", arm.getTeleShiftState());
-        SmartDashboard.putNumber("Encoder value", arm.getEncoderCount());
+        SmartDashboard.putNumber("Encoder Value", arm.getEncoderCount());
         SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
     } 
     
@@ -60,7 +59,7 @@ public class Shuffleboard extends SubsystemBase {
     }
 
     public void logLimelight() {
-        SmartDashboard.putNumber("Distance", limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
+        SmartDashboard.putNumber("Distance To Grid", limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
         SmartDashboard.putNumber("Pipe", limelight.pipe);
     }
 

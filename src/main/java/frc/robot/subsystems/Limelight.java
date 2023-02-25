@@ -6,11 +6,11 @@ import frc.robot.Constants.LimelightConstants;
 
 public class Limelight extends SubsystemBase {
 
+    private static Limelight instance;
+
     private final NetworkTable table;
 
     public int pipe = 0;
-
-    private static Limelight instance;
     
     private Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -21,6 +21,7 @@ public class Limelight extends SubsystemBase {
         if (instance == null) {
             instance = new Limelight();
         }
+        
         return instance;
     }
 

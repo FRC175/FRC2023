@@ -1,11 +1,7 @@
 package frc.robot.commands.led;
 
 import frc.robot.subsystems.LED;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 
 public class CycleColor extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -26,7 +22,7 @@ public class CycleColor extends CommandBase {
   @Override
   public void execute() {
     led.cycleColor(forward);
-    led.sendColorToShuffleboard();
+    led.sendColorToShuffleboard(); // gripper dot get gripped
   }
 
   @Override

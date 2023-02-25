@@ -56,8 +56,6 @@ public class RobotContainer {
 
     CameraServer.startAutomaticCapture();
 
-    gripper.gripped(false);
-
     configureDefaultCommands();
     configureButtonBindings();
     configureAutoChooser();
@@ -72,19 +70,18 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    // Arcade Drive and Lateral Drive
+    // Accel Drive and Lateral Drive
     drive.setDefaultCommand(new RunCommand(() -> {
       double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
       double turn = -1 * driverController.getLeftX();
       if (driverController.getRightBumper()) {
         drive.extendLat(true);
         drive.latDrive(throttle);
-        drive.arcadeDrive(0, 0);
+        drive.setOpenLoop(0, 0);
       } else {
         drive.latDrive(0);
         drive.extendLat(false);
-        drive.arcadeDrive(throttle, turn);
-        
+        drive.accelDrive(throttle, turn);
       }
     }, drive));
 
@@ -117,7 +114,7 @@ public class RobotContainer {
       arm.extend(false);
     }, arm));
 
-    // Operator RT: Grip Gripper
+    // Operator A: Grip Grip Gripper
     new Trigger(() -> operatorController.getAButton())
     .onTrue(new Grip(gripper, true))
     .onFalse(new Grip(gripper, false));
@@ -152,8 +149,7 @@ public class RobotContainer {
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
-    autoChooser.addOption("Drive Tarmac", new DriveAuto(drive, 70));
-    autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
+    autoChooser.addOption("Drive Community", new DriveAuto(drive, 70));
     autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
 
     SmartDashboard.putData(autoChooser);

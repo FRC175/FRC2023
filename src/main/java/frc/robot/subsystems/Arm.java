@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -18,7 +19,8 @@ public class Arm extends SubsystemBase{
     public enum ArmState {
         LOW,
         MIDDLE,
-        HIGH
+        HIGH,
+        INSIDE
     }
     private ArmState state;
 
@@ -26,9 +28,11 @@ public class Arm extends SubsystemBase{
         telescope = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, ArmConstants.TELESCOPE_FORWARD_CHANNEL, ArmConstants.TELESCOPE_REVERSE_CHANNEL); 
         armRotater = new CANSparkMax(ArmConstants.ARM_ROTATER_PORT, CANSparkMax.MotorType.kBrushless);
         brake = new Solenoid(PneumaticsModuleType.CTREPCM, ArmConstants.BRAKE_CHANNEL);
+
         telescopeExtended = false;
         brakeSet = false;
         state = ArmState.LOW;
+
         extend(false);
         setOpenLoop(0);
      
@@ -87,6 +91,6 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void resetSensors() {
-
+        armRotater.getEncoder().setPosition(0);
     }
 }

@@ -5,8 +5,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.LEDConstants;
-import java.awt.Color;
-
 
 public final class LED extends SubsystemBase {
 
@@ -46,18 +44,17 @@ public final class LED extends SubsystemBase {
         }
     }
 
-    private final Spark blinkin;
     private static LED instance;
-    private ColorCycle colorCycle = new ColorCycle();
+
+    private final Spark blinkin;
+    private ColorCycle colorCycle;
 
     private LED() {
         blinkin = new Spark(LEDConstants.BLINKIN_PORT);
+        colorCycle = new ColorCycle();
+
         setLED(colorCycle.getColorCode());
         sendColorToShuffleboard();
-    }
-
-    public void setLED(double value) { 
-        blinkin.set(value); 
     }
 
     public static LED getInstance() {
@@ -70,6 +67,14 @@ public final class LED extends SubsystemBase {
     public void cycleColor(boolean forward) {
         colorCycle.cycle(forward);
         setLED(colorCycle.getColorCode());
+    }
+
+    public void setLED(double value) { 
+        blinkin.set(value); 
+    }
+
+    public double getColor() {
+        return colorCycle.getColorCode();
     }
 
     public void sendColorToShuffleboard() {
@@ -90,9 +95,5 @@ public final class LED extends SubsystemBase {
     @Override
     public void resetSensors() {
         
-    }
-
-    public double getColor() {
-        return colorCycle.getColorCode();
     }
 }

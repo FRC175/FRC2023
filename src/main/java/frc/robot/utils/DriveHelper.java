@@ -8,13 +8,10 @@ import frc.robot.Constants.DriveConstants;
 
 public final class DriveHelper {
 
-    
-    // Spark Maxes
     private final CANSparkMax left, right;
     private final RelativeEncoder leftEncoder, rightEncoder;
     PIDController controllerR, controllerL;
     
-
     public DriveHelper(CANSparkMax left, CANSparkMax right, RelativeEncoder leftEncoder, RelativeEncoder rightEncoder) {
         this.left = left;
         this.right = right;
@@ -29,7 +26,7 @@ public final class DriveHelper {
        double leftOut = throttle - turn; 
        double rightOut = throttle + turn; 
        left.set(leftOut);
-       right.set(rightOut); 
+       right.set(rightOut);
     }
     
     private double clamp(double in, double max, double min) {
