@@ -7,12 +7,11 @@ import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
 
 public class DriveThenBalance extends SequentialCommandGroup {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  
-    public DriveThenBalance(Drive drive, ColorSensor colorSensor) {
-      addCommands(
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+
+  public DriveThenBalance(Drive drive, ColorSensor colorSensor) {
+    addCommands(
         new DriveAuto(drive, 70),
-        new Balancing(colorSensor, drive)
-      );
-    }
+        new Balancing(colorSensor, drive));
+  }
 }

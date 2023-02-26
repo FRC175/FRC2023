@@ -8,92 +8,93 @@ import frc.robot.Constants.LEDConstants;
 
 public final class LED extends SubsystemBase {
 
-    private static class ColorNode {
-        ColorNode nextNode = null;
-        ColorNode prevNode = null;
-        double value;
-        public ColorNode(double value) {
-            this.value = value;
-        }
-        
-        void setNext(ColorNode next) {
-            this.nextNode = next;
-            next.prevNode = this;
-        }
-    }
+	private static class ColorNode {
+		ColorNode nextNode = null;
+		ColorNode prevNode = null;
+		double value;
 
-    private static class ColorCycle {
-        private ColorNode off = new ColorNode(0.95);
-        private ColorNode yellow = new ColorNode(0.69);
-        private ColorNode purple = new ColorNode(0.91);
-        private ColorNode current;
+		public ColorNode(double value) {
+			this.value = value;
+		}
 
-        private ColorCycle() {
-            off.setNext(purple);
-            purple.setNext(yellow);
-            yellow.setNext(off);
-            current = off;
-        }
+		void setNext(ColorNode next) {
+			this.nextNode = next;
+			next.prevNode = this;
+		}
+	}
 
-        public void cycle(boolean forward) {
-            current = forward ? current.nextNode : current.prevNode;
-        }
+	private static class ColorCycle {
+		private ColorNode off = new ColorNode(0.95);
+		private ColorNode yellow = new ColorNode(0.69);
+		private ColorNode purple = new ColorNode(0.91);
+		private ColorNode current;
 
-        public double getColorCode() {
-            return current.value;
-        }
-    }
+		private ColorCycle() {
+			off.setNext(purple);
+			purple.setNext(yellow);
+			yellow.setNext(off);
+			current = off;
+		}
 
-    private static LED instance;
+		public void cycle(boolean forward) {
+			current = forward ? current.nextNode : current.prevNode;
+		}
 
-    private final Spark blinkin;
-    private ColorCycle colorCycle;
+		public double getColorCode() {
+			return current.value;
+		}
+	}
 
-    private LED() {
-        blinkin = new Spark(LEDConstants.BLINKIN_PORT);
-        colorCycle = new ColorCycle();
+	private static LED instance;
 
-        setLED(colorCycle.getColorCode());
-        sendColorToShuffleboard();
-    }
+	private final Spark blinkin;
+	private ColorCycle colorCycle;
 
-    public static LED getInstance() {
-        if (instance == null) {
-            instance = new LED();
-        }
-        return instance;
-    }
+	private LED() {
+		blinkin = new Spark(LEDConstants.BLINKIN_PORT);
+		colorCycle = new ColorCycle();
 
-    public void cycleColor(boolean forward) {
-        colorCycle.cycle(forward);
-        setLED(colorCycle.getColorCode());
-    }
+		setLED(colorCycle.getColorCode());
+		sendColorToShuffleboard();
+	}
 
-    public void setLED(double value) { 
-        blinkin.set(value); 
-    }
+	public static LED getInstance() {
+		if (instance == null) {
+			instance = new LED();
+		}
+		return instance;
+	}
 
-    public double getColor() {
-        return colorCycle.getColorCode();
-    }
+	public void cycleColor(boolean forward) {
+		colorCycle.cycle(forward);
+		setLED(colorCycle.getColorCode());
+	}
 
-    public void sendColorToShuffleboard() {
-        SmartDashboard.putData(new Sendable() {
+	public void setLED(double value) {
+		blinkin.set(value);
+	}
 
-            @Override
-            public void initSendable(SendableBuilder builder) {
-              builder.addDoubleProperty("ColorWidget", this::get, null);
-            }
-      
-            double get() {
-              return getColor();
-            }
-            
-        });
-    }
+	public double getColor() {
+		return colorCycle.getColorCode();
+	}
 
-    @Override
-    public void resetSensors() {
-        
-    }
+	public void sendColorToShuffleboard() {
+		SmartDashboard.putData(new Sendable() {
+
+			@Override
+			public void initSendable(SendableBuilder builder) {
+				builder.addDoubleProperty("ColorWidget", this::get, null);
+			}
+
+			double get() {
+				return getColor();
+			}
+
+		});
+	}
+
+	@Override
+	public void resetSensors() {
+
+	}
 }

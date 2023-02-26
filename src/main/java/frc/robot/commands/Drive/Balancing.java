@@ -44,7 +44,7 @@ public class Balancing extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (colorSensor.determineRB()) {
+        if (colorSensor.determineRB() || Math.abs(drive.getAngle()) < 5.0) {
             drive.setOpenLoop(0.0, 0.0);
             return true;
         }
