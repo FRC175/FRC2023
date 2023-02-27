@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,6 +59,8 @@ public class RobotContainer {
 
 		autoChooser = new SendableChooser<>();
 
+		CameraServer.startAutomaticCapture();
+
 		configureDefaultCommands();
 		configureButtonBindings();
 		configureAutoChooser();
@@ -81,7 +84,7 @@ public class RobotContainer {
 			} else if (driverController.getXButton()) {
 				drive.dampDrive(throttle, turn, 0.25);
 			} else {
-				drive.arcadeDrive(throttle, turn);
+				drive.bufferDrive(throttle, turn);
 			}
 			
 		}, drive));
@@ -109,6 +112,11 @@ public class RobotContainer {
 
 		new Trigger(() -> driverController.getYButton())
 				.onTrue(new DriveToDist(drive, limelight));
+
+		new Trigger(() -> driverController.getLeftStickButton())
+				.onTrue(new InstantCommand(() -> {
+					drive.resetGyro();
+				}, drive));
 
 		// Operator Right Stick: Arm and Break
 		new Trigger(() -> Math.abs(operatorController.getRightY()) >= 0.10)

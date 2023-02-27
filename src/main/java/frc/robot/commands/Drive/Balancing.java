@@ -20,17 +20,17 @@ public class Balancing extends CommandBase {
 
     @Override
     public void initialize() {
-        drive.resetSensors();
-    }
+
+	}
 
     @Override
     public void execute() {
         if (drive.getAngle() > 35.0) {
-            drive.setOpenLoop(-1.0, -1.0);
+            drive.dampDrive(1.0, 0, 0.25);
         } else if (drive.getAngle() < -35.0) {
-            drive.setOpenLoop(1.0, 1.0);
+            drive.dampDrive(-1.0, 0, 0.25);
         } else {
-            drive.setOpenLoop(drive.getAngle() * -1.0 / 35.0, drive.getAngle() * -1.0 / 35.0);
+            drive.dampDrive(drive.getAngle() * 1.0 / 35.0, 0, 0.25);
         }
         SmartDashboard.putBoolean("is Balancing", true);
     }

@@ -76,6 +76,10 @@ public final class Drive extends SubsystemBase {
 		driveHelper.dampDrive(throttle, turn, dampness);
 	}
 
+	public void bufferDrive(double throttle, double turn) {
+		driveHelper.bufferDrive(throttle, turn);
+	}
+
 	public double[] getMasterRPMs() {
 		double[] rpm = { rightMasterEncoder.getVelocity(), leftMasterEncoder.getVelocity() };
 		return rpm;
@@ -88,6 +92,10 @@ public final class Drive extends SubsystemBase {
 
 	public double getAngle() {
 		return gyro.getAngle();
+	}
+
+	public void resetGyro() {
+		gyro.reset();
 	}
 
 	@Override

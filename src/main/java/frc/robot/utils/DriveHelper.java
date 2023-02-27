@@ -1,5 +1,8 @@
 package frc.robot.utils;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -10,7 +13,10 @@ public final class DriveHelper {
 
 	private final CANSparkMax left, right;
 	private final RelativeEncoder leftEncoder, rightEncoder;
-	PIDController controllerR, controllerL;
+	private PIDController controllerR, controllerL;
+	private Queue<Double> throttleBuffer = new LinkedList<>();
+	private final int BUFF_SIZE = 25;
+	private double outputThrottle = 0.0;
 
 	public DriveHelper(CANSparkMax left, CANSparkMax right, RelativeEncoder leftEncoder, RelativeEncoder rightEncoder) {
 		this.left = left;
@@ -34,7 +40,19 @@ public final class DriveHelper {
 		double rightOut = clamp((throttle - turn), 1.0, -1.0) * dampness;
 		left.set(leftOut);
 		right.set(rightOut);
-		
+	}
+
+	public void bufferDrive(double throttle, double turn) {
+		double staleThrottle = 0.0;
+		if (throttleBuffer.size() >= BUFF_SIZE)
+            staleThrottle = throttleBuffer.poll();
+
+		throttleBuffer.add(throttle);
+
+		outputThrottle -= (staleThrottle / (double)BUFF_SIZE);
+		outputThrottle += throttle / (double)BUFF_SIZE;
+
+		arcadeDrive(outputThrottle, turn);
 	}
 
 	private double clamp(double in, double max, double min) {
