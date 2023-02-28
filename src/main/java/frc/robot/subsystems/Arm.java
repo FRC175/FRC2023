@@ -71,13 +71,11 @@ public class Arm extends SubsystemBase {
 	public void setBrake(boolean braking) {
 		brakeSet = braking;
 		brake.set(braking);
-		SmartDashboard.putBoolean("Brake", braking);
 	}
 
 	public void extend(boolean extend) {
 		telescopeExtended = extend;
 		telescope.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-		SmartDashboard.putBoolean("Telescope", extend);
 	}
 
 	public boolean getBrakeState() {

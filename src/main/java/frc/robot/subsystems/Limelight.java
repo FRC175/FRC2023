@@ -45,7 +45,7 @@ public class Limelight extends SubsystemBase {
 	public double getDistance(double h) {
 		double x = ((h - LimelightConstants.MOUNT_HEIGHT)
 				/ Math.tan(Math.toRadians(LimelightConstants.MOUNT_ANGLE + getVerticalAngle())));
-		return (x * Math.cos(Math.toRadians(getHorizontalAngle())));
+		return x;
 	}
 
 	@Override

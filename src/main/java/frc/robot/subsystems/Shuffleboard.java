@@ -44,7 +44,7 @@ public class Shuffleboard extends SubsystemBase {
 
 	public void logArm() {
 		SmartDashboard.putBoolean("Is Telescope?", arm.getTeleShiftState());
-		SmartDashboard.putNumber("Encoder Value", arm.getEncoderCount());
+		SmartDashboard.putNumber("Arm Encoder Value", arm.getEncoderCount());
 		SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
 	}
 

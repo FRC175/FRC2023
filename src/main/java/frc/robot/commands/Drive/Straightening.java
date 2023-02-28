@@ -10,19 +10,15 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DriveToDist extends CommandBase {
+public class Straightening extends CommandBase {
 	@SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 	// CHANGE THIS TO USED SUBSYSTEM
 	private final Drive drive;
 	private final Limelight limelight;
-	private double targetHeight;
-	private double goalDistance;
 
-	public DriveToDist(Drive drive, Limelight limelight, double targetHeight, double goalDistance) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
+	public Straightening(Drive drive, Limelight limelight) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
 		this.drive = drive;
 		this.limelight = limelight;
-		this.targetHeight = targetHeight;
-		this.goalDistance = goalDistance;
 		// ADD SUBSYSTEM TO REQUIREMENTS
 		addRequirements(drive, limelight);
 	}
@@ -35,7 +31,7 @@ public class DriveToDist extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		drive.arcadeDrive(0.1, 0);
+		drive.arcadeDrive(0, limelight.getHorizontalAngle() < 0 ? 0.1 : -0.1);
 	}
 
 	// Called once the command ends or is interrupted.
@@ -46,7 +42,7 @@ public class DriveToDist extends CommandBase {
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		if (limelight.getVerticalAngle() > 4.0) {
+		if (Math.abs(limelight.getHorizontalAngle()) < 0.1) {
 			drive.setOpenLoop(0, 0);
 			return true;
 		}

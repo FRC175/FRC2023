@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.arm.RunArm;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.auto.*;
@@ -111,7 +112,7 @@ public class RobotContainer {
 				.onTrue(new Balancing(colorSensor, drive));
 
 		new Trigger(() -> driverController.getYButton())
-				.onTrue(new DriveToDist(drive, limelight));
+				.onTrue(new DriveToDist(drive, limelight, limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE, 100));
 
 		new Trigger(() -> driverController.getLeftStickButton())
 				.onTrue(new InstantCommand(() -> {
@@ -119,8 +120,8 @@ public class RobotContainer {
 				}, drive));
 
 		// Operator Right Stick: Arm and Break
-		new Trigger(() -> Math.abs(operatorController.getRightY()) >= 0.10)
-				.onTrue(new RunArm(arm, operatorController));
+		new Trigger(() -> Math.abs(driverController.getRightY()) >= 0.10)
+				.onTrue(new RunArm(arm, driverController));
 
 		// Operator Y: Extend Arm
 		new Trigger(() -> operatorController.getYButton())

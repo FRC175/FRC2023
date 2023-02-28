@@ -63,8 +63,8 @@ public final class Constants {
 	}
 
 	public static final class LimelightConstants {
-		public static final double MOUNT_ANGLE = 4.7;
-		public static final double MOUNT_HEIGHT = 26.5;
+		public static final double MOUNT_ANGLE = 8.0;
+		public static final double MOUNT_HEIGHT = 32.5;
 	}
 
 	public static final class FieldConstants {
