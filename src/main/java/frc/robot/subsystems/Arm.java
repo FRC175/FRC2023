@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 
@@ -43,7 +42,7 @@ public class Arm extends SubsystemBase {
 		brakeSet = false;
 		state = ArmState.LOW;
 
-		extend(false);
+		setExtendOff();
 		setOpenLoop(0);
 
 		configureSparks();
@@ -65,12 +64,32 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void setOpenLoop(double demand) {
-		armRotater.set(demand);
+		if (getEncoderCount() <= 10.0) {
+			setExtendOff();
+		}
+		armRotater.set(-demand);
 	}
 
-	public void setBrake(boolean braking) {
-		brakeSet = braking;
-		brake.set(braking);
+	public void setBrakeOn() {
+		brakeSet = true;
+		brake.set(false);
+	}
+
+	public void setBrakeOff() {
+		brakeSet = false;
+		brake.set(true);
+	}
+
+	public void setExtendOn() {
+		if (getEncoderCount() >= 10.0) {
+			telescopeExtended = true;
+			extend(false);
+		}
+	}
+
+	public void setExtendOff() {
+		telescopeExtended = false;
+		extend(true);
 	}
 
 	public void extend(boolean extend) {

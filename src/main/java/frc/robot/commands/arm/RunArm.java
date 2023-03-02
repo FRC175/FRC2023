@@ -21,7 +21,8 @@ public class RunArm extends CommandBase {
 
   @Override
   public void execute() {
-    arm.setBrake(false);
+    // if L and R pulled
+    arm.setBrakeOff();
     arm.setOpenLoop(controller.getRightY());
   }
 

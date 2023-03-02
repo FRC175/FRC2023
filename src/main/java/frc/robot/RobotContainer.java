@@ -92,7 +92,7 @@ public class RobotContainer {
 
 		// Unextends Arm
 		arm.setDefaultCommand(new RunCommand(() -> {
-			arm.setBrake(true);
+			arm.setBrakeOn();
 		}, arm));
 
 		// Sends Data to Shuffleboard
@@ -120,19 +120,19 @@ public class RobotContainer {
 				}, drive));
 
 		// Operator Right Stick: Arm and Break
-		new Trigger(() -> Math.abs(driverController.getRightY()) >= 0.10)
-				.onTrue(new RunArm(arm, driverController));
+		new Trigger(() -> Math.abs(operatorController.getRightY()) >= 0.10)
+				.onTrue(new RunArm(arm, operatorController));
 
 		// Operator Y: Extend Arm
 		new Trigger(() -> operatorController.getYButton())
 				.whileTrue(new RunCommand(() -> {
-					arm.extend(true);
+					arm.setExtendOn();
 				}, arm));
 
 		// Operator X: Unextend Arm
 		new Trigger(() -> operatorController.getXButton())
 				.whileTrue(new RunCommand(() -> {
-					arm.extend(false);
+					arm.setExtendOff();
 				}, arm));
 
 		// Operator A: Grip Grip Gripper

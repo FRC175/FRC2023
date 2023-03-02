@@ -23,7 +23,7 @@ public class SetArmPosition extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        arm.setBrake(false);
+        arm.setBrakeOff();
 
         if (arm.getEncoderCount() < state.value)
             arm.setOpenLoop(0.3);
@@ -35,7 +35,7 @@ public class SetArmPosition extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         arm.setArmState(ArmState.MIDDLE);
-        arm.setBrake(true);
+        arm.setBrakeOn();
     }
 
     // Returns true when the command should end.
