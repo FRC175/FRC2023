@@ -23,7 +23,7 @@ public class RunArm extends CommandBase {
   public void execute() {
     // if L and R pulled
     arm.setBrakeOff();
-    arm.setOpenLoop(controller.getRightY());
+    arm.setOpenLoop(Math.abs(controller.getRightY()) < 0.1 ? 0 : controller.getRightY());
   }
 
   @Override

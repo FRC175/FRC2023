@@ -18,10 +18,13 @@ public class Arm extends SubsystemBase {
 	private boolean brakeSet;
 
 	public enum ArmState {
-		LOW(ArmConstants.LOW_ENCODER_COUNT),
+		ASLEEP(ArmConstants.ASLEEP_ENCODER_COUNT),
+		AWAKE(ArmConstants.AWAKE_ENCODER_COUNT),
+		CUBE(ArmConstants.CUBE_ENCODER_COUNT),
 		MIDDLE(ArmConstants.MEDIUM_ENCODER_COUNT),
 		HIGH(ArmConstants.HIGH_ENCODER_COUNT),
-		INSIDE(ArmConstants.INSIDE_ENCODER_COUNT);
+		PORTAL(ArmConstants.PORTAL_ENCODER_COUNT),
+		INITIAL(0);
 
 		public double value;
 
@@ -40,7 +43,7 @@ public class Arm extends SubsystemBase {
 
 		telescopeExtended = false;
 		brakeSet = false;
-		state = ArmState.LOW;
+		state = ArmState.INITIAL;
 
 		setExtendOff();
 		setOpenLoop(0);
@@ -64,7 +67,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void setOpenLoop(double demand) {
-		if (getEncoderCount() <= 10.0) {
+		if (getEncoderCount() <= 14.0) {
 			setExtendOff();
 		}
 		armRotater.set(-demand);
@@ -81,7 +84,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void setExtendOn() {
-		if (getEncoderCount() >= 10.0) {
+		if (getEncoderCount() >= 14.0) {
 			telescopeExtended = true;
 			extend(false);
 		}
@@ -93,7 +96,6 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void extend(boolean extend) {
-		telescopeExtended = extend;
 		telescope.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 

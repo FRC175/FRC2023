@@ -46,7 +46,7 @@ public class DriveToDist extends CommandBase {
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		if (limelight.getVerticalAngle() > 4.0) {
+		if (limelight.getVerticalAngle() > 2.8) {
 			drive.setOpenLoop(0, 0);
 			return true;
 		}

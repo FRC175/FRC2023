@@ -47,10 +47,12 @@ public final class Constants {
 		public static final int TELESCOPE_REVERSE_CHANNEL = 3;
 		public static final int ARM_ROTATER_PORT = 10;
 		public static final int BRAKE_CHANNEL = 2;
-		public static final int LOW_ENCODER_COUNT = 5;
-		public static final int MEDIUM_ENCODER_COUNT = 15;
-		public static final int HIGH_ENCODER_COUNT = 25;
-		public static final int INSIDE_ENCODER_COUNT = 8;
+		public static final int CUBE_ENCODER_COUNT = 28;
+		public static final int AWAKE_ENCODER_COUNT = 29;
+		public static final int MEDIUM_ENCODER_COUNT = 43;
+		public static final int HIGH_ENCODER_COUNT = 53;
+		public static final int ASLEEP_ENCODER_COUNT = 26;
+		public static final int PORTAL_ENCODER_COUNT = 48;
 	}
 
 	public static final class GripperConstants {

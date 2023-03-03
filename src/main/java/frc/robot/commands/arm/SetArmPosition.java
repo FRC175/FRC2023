@@ -26,16 +26,17 @@ public class SetArmPosition extends CommandBase {
         arm.setBrakeOff();
 
         if (arm.getEncoderCount() < state.value)
-            arm.setOpenLoop(0.3);
+            arm.setOpenLoop(-0.1);
         else if (arm.getEncoderCount() > state.value)
-            arm.setOpenLoop(-0.3);
+            arm.setOpenLoop(0.1);
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        arm.setArmState(ArmState.MIDDLE);
+        arm.setArmState(state);
         arm.setBrakeOn();
+        arm.setOpenLoop(0);
     }
 
     // Returns true when the command should end.

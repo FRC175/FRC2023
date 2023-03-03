@@ -31,7 +31,7 @@ public class Straightening extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		drive.arcadeDrive(0, limelight.getHorizontalAngle() < 0 ? 0.1 : -0.1);
+		drive.arcadeDrive(0, limelight.getHorizontalAngle() < 0 ? 0.02 : -0.02);
 	}
 
 	// Called once the command ends or is interrupted.
@@ -42,7 +42,7 @@ public class Straightening extends CommandBase {
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		if (Math.abs(limelight.getHorizontalAngle()) < 0.1) {
+		if (Math.abs(limelight.getHorizontalAngle() + 15.0) < 0.1) {
 			drive.setOpenLoop(0, 0);
 			return true;
 		}

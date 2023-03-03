@@ -17,6 +17,7 @@ import frc.robot.commands.auto.*;
 import frc.robot.commands.drive.Balancing;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveToDist;
+import frc.robot.commands.drive.Straightening;
 import frc.robot.commands.gripper.Grip;
 import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
@@ -75,11 +76,19 @@ public class RobotContainer {
 		return instance;
 	}
 
+	private double deadband(double input) {
+		if (Math.abs(input) < 0.1) {
+			return 0;
+		} else {
+			return input;
+		}
+	}
+
 	private void configureDefaultCommands() {
 		// Accel Drive and Lateral Drive
 		drive.setDefaultCommand(new RunCommand(() -> {
 			double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-			double turn = driverController.getLeftX();
+			double turn = deadband(driverController.getLeftX());
 			if (driverController.getAButton()) {
 				drive.dampDrive(throttle, turn, 0.5);
 			} else if (driverController.getXButton()) {
@@ -111,8 +120,13 @@ public class RobotContainer {
 		new Trigger(() -> driverController.getBButton())
 				.onTrue(new Balancing(colorSensor, drive));
 
+		// Driver Y Button: DriveToDist
 		new Trigger(() -> driverController.getYButton())
 				.onTrue(new DriveToDist(drive, limelight, limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE, 100));
+
+		// Driver DPAD Down: Straighten
+		new Trigger(() -> driverController.getPOV() == 180)
+				.onTrue(new Straightening(drive, limelight));
 
 		new Trigger(() -> driverController.getLeftStickButton())
 				.onTrue(new InstantCommand(() -> {
@@ -135,29 +149,39 @@ public class RobotContainer {
 					arm.setExtendOff();
 				}, arm));
 
-		// Operator A: Grip Grip Gripper
-		new Trigger(() -> operatorController.getAButton())
+		// Operator RT: Grip Grip Gripper
+		new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
 				.onTrue(new Grip(gripper, true))
 				.onFalse(new Grip(gripper, false));
 
-		// Operator D-Pad Down: Arm to Floor setpoint
+		// Operator D-Pad Down: Arm to Cube setpoint
 		new Trigger(() -> operatorController.getPOV() == 180)
-				.onTrue(new SetArmPosition(arm, ArmState.LOW));
+				.onTrue(new SetArmPosition(arm, ArmState.CUBE));
 
-		// Operator D-Pad Right or Left: Arm to Middle setpoint
-		new Trigger(() -> operatorController.getPOV() == 270 || operatorController.getPOV() == 90)
+		// Operator D-Pad Right: Arm to Awake setpoint
+		new Trigger(() -> operatorController.getPOV() == 90)
+				.onTrue(new SetArmPosition(arm, ArmState.AWAKE));
+
+		// Operator D-Pad Left: Arm to Asleep setpoint
+		new Trigger(() -> operatorController.getPOV() == 270)
+				.onTrue(new SetArmPosition(arm, ArmState.ASLEEP));
+
+		// Operator D-Pad Up: Arm to Portal setpoint
+		new Trigger(() -> operatorController.getPOV() == 0)
+				.onTrue(new SetArmPosition(arm, ArmState.PORTAL));
+
+		new Trigger(() -> operatorController.getAButton())
 				.onTrue(new SetArmPosition(arm, ArmState.MIDDLE));
 
-		// Operator D-Pad Up: Arm to High setpoint
-		new Trigger(() -> operatorController.getPOV() == 0)
+		new Trigger(() -> operatorController.getBButton())
 				.onTrue(new SetArmPosition(arm, ArmState.HIGH));
 
 		// Operator RB: Cycle LED Right
-		new Trigger(() -> operatorController.getRightBumper())
+		new Trigger(() -> driverController.getRightBumper())
 				.onTrue(new CycleColor(led, true));
 
 		// Operator LB: Cycle LED Left
-		new Trigger(() -> operatorController.getLeftBumper())
+		new Trigger(() -> driverController.getLeftBumper())
 				.onTrue(new CycleColor(led, false));
 
 		// Driver START: Switch Pipes
@@ -171,6 +195,7 @@ public class RobotContainer {
 		autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
 		autoChooser.addOption("Drive Community", new DriveAuto(drive, 70));
 		autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripper, drive));
 
 		SmartDashboard.putData(autoChooser);
 	}
