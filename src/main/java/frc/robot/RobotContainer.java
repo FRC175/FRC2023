@@ -128,6 +128,7 @@ public class RobotContainer {
 		new Trigger(() -> driverController.getPOV() == 180)
 				.onTrue(new Straightening(drive, limelight));
 
+		// Driver Left Claw: Reset Gyro
 		new Trigger(() -> driverController.getLeftStickButton())
 				.onTrue(new InstantCommand(() -> {
 					drive.resetGyro();
@@ -170,18 +171,26 @@ public class RobotContainer {
 		new Trigger(() -> operatorController.getPOV() == 0)
 				.onTrue(new SetArmPosition(arm, ArmState.PORTAL));
 
+		// Operator A: Arm to Middle setpoint
 		new Trigger(() -> operatorController.getAButton())
 				.onTrue(new SetArmPosition(arm, ArmState.MIDDLE));
 
+		// Operator B: Arm to High setpoint
 		new Trigger(() -> operatorController.getBButton())
 				.onTrue(new SetArmPosition(arm, ArmState.HIGH));
 
+		// Operator Right Claw: Arm to Reset setpoint
+		new Trigger(() -> operatorController.getRightStickButton())
+				.onTrue(new InstantCommand(() -> {
+					arm.resetSensors();
+				}, arm));
+
 		// Operator RB: Cycle LED Right
-		new Trigger(() -> driverController.getRightBumper())
+		new Trigger(() -> operatorController.getRightBumper())
 				.onTrue(new CycleColor(led, true));
 
 		// Operator LB: Cycle LED Left
-		new Trigger(() -> driverController.getLeftBumper())
+		new Trigger(() -> operatorController.getLeftBumper())
 				.onTrue(new CycleColor(led, false));
 
 		// Driver START: Switch Pipes

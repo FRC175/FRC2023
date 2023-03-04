@@ -17,6 +17,8 @@ public class Arm extends SubsystemBase {
 	private final Solenoid brake;
 	private boolean brakeSet;
 
+	public int I = 2;
+
 	public enum ArmState {
 		ASLEEP(ArmConstants.ASLEEP_ENCODER_COUNT),
 		AWAKE(ArmConstants.AWAKE_ENCODER_COUNT),

@@ -28,8 +28,17 @@ public class Gripper extends SubsystemBase {
 	}
 
 	public void gripped(boolean extend) {
-		gripGripped = extend;
-		grip.set(gripGripped ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+		grip.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+	}
+
+	public void setGripOn() {
+		gripGripped = true;
+		gripped(false);
+	}
+
+	public void setGripOff() {
+		gripGripped = false;
+		gripped(true);
 	}
 
 	public boolean getGripShiftState() {

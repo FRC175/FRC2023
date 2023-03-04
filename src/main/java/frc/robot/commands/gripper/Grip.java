@@ -21,7 +21,11 @@ public class Grip extends CommandBase {
 
 	@Override
 	public void execute() {
-		gripper.gripped(grip);
+		if (grip) {
+			gripper.setGripOn();
+		} else {
+			gripper.setGripOff();
+		}
 	}
 
 	@Override
