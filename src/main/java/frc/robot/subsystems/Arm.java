@@ -17,15 +17,15 @@ public class Arm extends SubsystemBase {
 	private final Solenoid brake;
 	private boolean brakeSet;
 
-	public int I = 2;
+	public static int I = 5;
 
 	public enum ArmState {
-		ASLEEP(ArmConstants.ASLEEP_ENCODER_COUNT),
-		AWAKE(ArmConstants.AWAKE_ENCODER_COUNT),
-		CUBE(ArmConstants.CUBE_ENCODER_COUNT),
-		MIDDLE(ArmConstants.MEDIUM_ENCODER_COUNT),
-		HIGH(ArmConstants.HIGH_ENCODER_COUNT),
-		PORTAL(ArmConstants.PORTAL_ENCODER_COUNT),
+		ASLEEP(ArmConstants.ASLEEP_ENCODER_COUNT + I),
+		AWAKE(ArmConstants.AWAKE_ENCODER_COUNT + I),
+		CUBE(ArmConstants.CUBE_ENCODER_COUNT + I),
+		MIDDLE(ArmConstants.MEDIUM_ENCODER_COUNT + I),
+		HIGH(ArmConstants.HIGH_ENCODER_COUNT + I),
+		PORTAL(ArmConstants.PORTAL_ENCODER_COUNT + I),
 		INITIAL(0);
 
 		public double value;
@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void setOpenLoop(double demand) {
-		if (getEncoderCount() <= 14.0) {
+		if (getEncoderCount() <= 26.0) {
 			setExtendOff();
 		}
 		armRotater.set(-demand);
@@ -86,7 +86,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void setExtendOn() {
-		if (getEncoderCount() >= 14.0) {
+		if (getEncoderCount() >= 20.0) {
 			telescopeExtended = true;
 			extend(false);
 		}

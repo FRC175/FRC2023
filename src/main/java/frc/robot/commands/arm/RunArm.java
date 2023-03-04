@@ -9,6 +9,10 @@ public class RunArm extends CommandBase {
   private final Arm arm;
   private final XboxController controller;
 
+  private boolean isLock = false;
+  
+  private double goal;
+
   public RunArm(Arm arm, XboxController controller) {
     this.arm = arm;
     this.controller = controller;
@@ -23,7 +27,20 @@ public class RunArm extends CommandBase {
   public void execute() {
     // if L and R pulled
     arm.setBrakeOff();
-    arm.setOpenLoop(Math.abs(controller.getRightY()) < 0.1 ? 0 : controller.getRightY());
+    if (!isLock) {
+      arm.setOpenLoop(Math.abs(controller.getRightY()) < 0.1 ? 0 : controller.getRightY() / 3.0);
+    } else {
+      if (goal - arm.getEncoderCount() > 0.1) {
+        arm.setOpenLoop(-0.1);
+      } else {
+        arm.setOpenLoop(0);
+      }
+    }
+    if (controller.getAButtonReleased()) {
+      isLock = !isLock;
+      goal = arm.getEncoderCount();
+    }
+    
   }
 
   @Override
@@ -33,6 +50,6 @@ public class RunArm extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(controller.getRightY()) <= 0.10;
+    return Math.abs(controller.getRightY()) <= 0.10 && !isLock;
   }
 }

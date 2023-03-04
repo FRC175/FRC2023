@@ -8,10 +8,13 @@ public class SetArmPosition extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final Arm arm;
     private ArmState state;
+    private boolean isFinite;
+    private boolean hasHit = false;;
 
-    public SetArmPosition(Arm arm, ArmState state) {
+    public SetArmPosition(Arm arm, ArmState state, boolean isFinite) {
         this.arm = arm;
         this.state = state;
+        this.isFinite = isFinite;
         addRequirements(arm);
     }
 
@@ -24,11 +27,26 @@ public class SetArmPosition extends CommandBase {
     @Override
     public void execute() {
         arm.setBrakeOff();
-
-        if (arm.getEncoderCount() < state.value)
-            arm.setOpenLoop(-0.1);
-        else if (arm.getEncoderCount() > state.value)
-            arm.setOpenLoop(0.1);
+        if (isFinite) {
+            if (arm.getEncoderCount() < state.value)
+                arm.setOpenLoop(-0.2);
+            else if (arm.getEncoderCount() > state.value)
+                arm.setOpenLoop(0.2);
+        } else {
+            if (!hasHit) {
+                if (arm.getEncoderCount() < state.value - 0.1)
+                    arm.setOpenLoop(-0.2);
+                else if (arm.getEncoderCount() > state.value + 0.1)
+                    arm.setOpenLoop(0.2);
+                else hasHit = true;
+            } else {
+                if (state.value - arm.getEncoderCount() > 0.1) {
+                    arm.setOpenLoop(-0.1);
+                } else {
+                    arm.setOpenLoop(0);
+                }
+            }
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -42,6 +60,7 @@ public class SetArmPosition extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return Math.abs(arm.getEncoderCount() - state.value) <= 0.1; // experiment with deadband
+        if (isFinite) return Math.abs(arm.getEncoderCount() - state.value) <= 0.1; // experiment with deadband
+        else return false;
     }
 }

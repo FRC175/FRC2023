@@ -25,12 +25,13 @@ public class Balancing extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.println("going");
         if (drive.getAngle() > 35.0) {
-            drive.dampDrive(1.0, 0, 0.25);
+            drive.arcadeDrive(0.2, 0);
         } else if (drive.getAngle() < -35.0) {
-            drive.dampDrive(-1.0, 0, 0.25);
+            drive.arcadeDrive(-0.2, 0);
         } else {
-            drive.dampDrive(drive.getAngle() * 1.0 / 35.0, 0, 0.25);
+            drive.arcadeDrive(drive.getAngle() * 0.15 / 35.0, 0);
         }
         SmartDashboard.putBoolean("is Balancing", true);
     }
@@ -44,10 +45,10 @@ public class Balancing extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (colorSensor.determineRB() || Math.abs(drive.getAngle()) < 5.0) {
-            drive.setOpenLoop(0.0, 0.0);
-            return true;
-        }
+        // if (Math.abs(drive.getAngle()) < 5.0) {
+        //     drive.setOpenLoop(0.0, 0.0);
+        //     return true;
+        // }
         return false;
     }
 }

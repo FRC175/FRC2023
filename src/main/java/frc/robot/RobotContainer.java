@@ -90,11 +90,11 @@ public class RobotContainer {
 			double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
 			double turn = deadband(driverController.getLeftX());
 			if (driverController.getAButton()) {
-				drive.dampDrive(throttle, turn, 0.5);
+				drive.bufferDrive(throttle, turn);
 			} else if (driverController.getXButton()) {
 				drive.dampDrive(throttle, turn, 0.25);
 			} else {
-				drive.bufferDrive(throttle, turn);
+				drive.dampDrive(throttle, turn, 0.5);
 			}
 			
 		}, drive));
@@ -152,32 +152,32 @@ public class RobotContainer {
 
 		// Operator RT: Grip Grip Gripper
 		new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
-				.onTrue(new Grip(gripper, true))
-				.onFalse(new Grip(gripper, false));
+				.onTrue(new Grip(gripper, false))
+				.onFalse(new Grip(gripper, true));
 
 		// Operator D-Pad Down: Arm to Cube setpoint
 		new Trigger(() -> operatorController.getPOV() == 180)
-				.onTrue(new SetArmPosition(arm, ArmState.CUBE));
+				.onTrue(new SetArmPosition(arm, ArmState.CUBE, false));
 
 		// Operator D-Pad Right: Arm to Awake setpoint
 		new Trigger(() -> operatorController.getPOV() == 90)
-				.onTrue(new SetArmPosition(arm, ArmState.AWAKE));
+				.onTrue(new SetArmPosition(arm, ArmState.AWAKE, false));
 
 		// Operator D-Pad Left: Arm to Asleep setpoint
 		new Trigger(() -> operatorController.getPOV() == 270)
-				.onTrue(new SetArmPosition(arm, ArmState.ASLEEP));
+				.onTrue(new SetArmPosition(arm, ArmState.ASLEEP, false));
 
 		// Operator D-Pad Up: Arm to Portal setpoint
 		new Trigger(() -> operatorController.getPOV() == 0)
-				.onTrue(new SetArmPosition(arm, ArmState.PORTAL));
+				.whileTrue(new SetArmPosition(arm, ArmState.PORTAL, false));
 
 		// Operator A: Arm to Middle setpoint
 		new Trigger(() -> operatorController.getAButton())
-				.onTrue(new SetArmPosition(arm, ArmState.MIDDLE));
+				.onTrue(new SetArmPosition(arm, ArmState.MIDDLE, false));
 
 		// Operator B: Arm to High setpoint
 		new Trigger(() -> operatorController.getBButton())
-				.onTrue(new SetArmPosition(arm, ArmState.HIGH));
+				.onTrue(new SetArmPosition(arm, ArmState.HIGH, false));
 
 		// Operator Right Claw: Arm to Reset setpoint
 		new Trigger(() -> operatorController.getRightStickButton())
@@ -205,6 +205,7 @@ public class RobotContainer {
 		autoChooser.addOption("Drive Community", new DriveAuto(drive, 70));
 		autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
 		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripper, drive));
+		autoChooser.addOption("Auto Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
 
 		SmartDashboard.putData(autoChooser);
 	}

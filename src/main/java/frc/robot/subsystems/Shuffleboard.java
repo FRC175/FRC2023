@@ -40,12 +40,15 @@ public class Shuffleboard extends SubsystemBase {
 
 	public void logColorSensor() {
 		SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
+
+		SmartDashboard.putString("Color", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
 	}
 
 	public void logArm() {
 		SmartDashboard.putBoolean("Is Telescope?", arm.getTeleShiftState());
 		SmartDashboard.putNumber("Arm Encoder Value", arm.getEncoderCount());
 		SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
+		SmartDashboard.putBoolean("Brake", arm.getBrakeState());
 	}
 
 	public void logGripper() {
