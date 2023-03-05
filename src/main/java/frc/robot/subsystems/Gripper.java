@@ -16,7 +16,7 @@ public class Gripper extends SubsystemBase {
 		grip = new DoubleSolenoid(Constants.PH_PORT, PneumaticsModuleType.REVPH,
 				GripperConstants.GRIPPER_FORWARD_CHANNEL, GripperConstants.GRIPPER_REVERSE_CHANNEL);
 		gripGripped = false;
-		gripped(false);
+		setGripClosed();
 	}
 
 	public static Gripper getInstance() {
@@ -31,14 +31,14 @@ public class Gripper extends SubsystemBase {
 		grip.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 
-	public void setGripOn() {
+	public void setGripOpen() {
 		gripGripped = true;
-		gripped(false);
+		gripped(true);
 	}
 
-	public void setGripOff() {
+	public void setGripClosed() {
 		gripGripped = false;
-		gripped(true);
+		gripped(false);
 	}
 
 	public boolean getGripShiftState() {

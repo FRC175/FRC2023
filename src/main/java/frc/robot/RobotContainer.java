@@ -18,7 +18,6 @@ import frc.robot.commands.drive.Balancing;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveToDist;
 import frc.robot.commands.drive.Straightening;
-import frc.robot.commands.gripper.Grip;
 import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
@@ -28,6 +27,7 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pump;
 import frc.robot.subsystems.Shuffleboard;
+import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Arm.ArmState;
 
 public class RobotContainer {
@@ -39,6 +39,7 @@ public class RobotContainer {
 	private final Shuffleboard shuffleboard;
 	private final Limelight limelight;
 	private final Pump pump;
+	private final Telescope telescope;
 
 	private final XboxController driverController;
 	private final XboxController operatorController;
@@ -55,6 +56,7 @@ public class RobotContainer {
 		shuffleboard = Shuffleboard.getInstance();
 		limelight = Limelight.getInstance();
 		pump = Pump.getInstance();
+		telescope = Telescope.getInstance();
 
 		driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
 		operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
@@ -118,7 +120,7 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Driver B Button: Balance
 		new Trigger(() -> driverController.getBButton())
-				.onTrue(new Balancing(colorSensor, drive));
+				.onTrue(new Balancing(drive));
 
 		// Driver Y Button: DriveToDist
 		new Trigger(() -> driverController.getYButton())
@@ -141,19 +143,23 @@ public class RobotContainer {
 		// Operator Y: Extend Arm
 		new Trigger(() -> operatorController.getYButton())
 				.whileTrue(new RunCommand(() -> {
-					arm.setExtendOn();
+					telescope.setExtendOn();
 				}, arm));
 
 		// Operator X: Unextend Arm
 		new Trigger(() -> operatorController.getXButton())
 				.whileTrue(new RunCommand(() -> {
-					arm.setExtendOff();
+					telescope.setExtendOff();
 				}, arm));
 
 		// Operator RT: Grip Grip Gripper
 		new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
-				.onTrue(new Grip(gripper, false))
-				.onFalse(new Grip(gripper, true));
+				.onTrue(new InstantCommand(() -> {
+					gripper.setGripOpen();
+				}, gripper))
+				.onFalse(new InstantCommand(() -> {
+					gripper.setGripClosed();
+				}, gripper));
 
 		// Operator D-Pad Down: Arm to Cube setpoint
 		new Trigger(() -> operatorController.getPOV() == 180)
@@ -172,8 +178,8 @@ public class RobotContainer {
 				.whileTrue(new SetArmPosition(arm, ArmState.PORTAL, false));
 
 		// Operator A: Arm to Middle setpoint
-		new Trigger(() -> operatorController.getAButton())
-				.onTrue(new SetArmPosition(arm, ArmState.MIDDLE, false));
+		// new Trigger(() -> operatorController.getAButton())
+		// 		.onTrue(new SetArmPosition(arm, ArmState.MIDDLE, false));
 
 		// Operator B: Arm to High setpoint
 		new Trigger(() -> operatorController.getBButton())
@@ -202,10 +208,12 @@ public class RobotContainer {
 
 	private void configureAutoChooser() {
 		autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
-		autoChooser.addOption("Drive Community", new DriveAuto(drive, 70));
+		autoChooser.addOption("Drive Community", new DriveAuto(drive, 90));
 		autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
-		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripper, drive));
+		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripper, drive, telescope));
 		autoChooser.addOption("Auto Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("Drivex2 Balance", new DriveThenDriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Drive2x Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
 
 		SmartDashboard.putData(autoChooser);
 	}

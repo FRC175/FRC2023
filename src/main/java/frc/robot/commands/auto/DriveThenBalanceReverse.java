@@ -14,7 +14,7 @@ public class DriveThenBalanceReverse extends SequentialCommandGroup {
     addCommands(
         new DriveAuto(drive, -55),
         new WaitCommand(1),
-        new Balancing(colorSensor, drive)
+        new Balancing(drive)
         );
   }
 }

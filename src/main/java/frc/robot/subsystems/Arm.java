@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
@@ -11,9 +10,7 @@ public class Arm extends SubsystemBase {
 
 	private static Arm instance;
 
-	private final DoubleSolenoid telescope;
 	private final CANSparkMax armRotater;
-	private boolean telescopeExtended;
 	private final Solenoid brake;
 	private boolean brakeSet;
 
@@ -38,16 +35,12 @@ public class Arm extends SubsystemBase {
 	private ArmState state;
 
 	private Arm() {
-		telescope = new DoubleSolenoid(Constants.PH_PORT, PneumaticsModuleType.REVPH,
-				ArmConstants.TELESCOPE_FORWARD_CHANNEL, ArmConstants.TELESCOPE_REVERSE_CHANNEL);
 		armRotater = new CANSparkMax(ArmConstants.ARM_ROTATER_PORT, CANSparkMax.MotorType.kBrushless);
 		brake = new Solenoid(Constants.PH_PORT, PneumaticsModuleType.REVPH, ArmConstants.BRAKE_CHANNEL);
 
-		telescopeExtended = false;
 		brakeSet = false;
 		state = ArmState.INITIAL;
 
-		setExtendOff();
 		setOpenLoop(0);
 
 		configureSparks();
@@ -69,8 +62,8 @@ public class Arm extends SubsystemBase {
 	}
 
 	public void setOpenLoop(double demand) {
-		if (getEncoderCount() <= 26.0) {
-			setExtendOff();
+		if (!isSafe()) {
+			Telescope.getInstance().setExtendOff();
 		}
 		armRotater.set(-demand);
 	}
@@ -85,28 +78,8 @@ public class Arm extends SubsystemBase {
 		brake.set(true);
 	}
 
-	public void setExtendOn() {
-		if (getEncoderCount() >= 20.0) {
-			telescopeExtended = true;
-			extend(false);
-		}
-	}
-
-	public void setExtendOff() {
-		telescopeExtended = false;
-		extend(true);
-	}
-
-	public void extend(boolean extend) {
-		telescope.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-	}
-
 	public boolean getBrakeState() {
 		return brakeSet;
-	}
-
-	public boolean getTeleShiftState() {
-		return telescopeExtended;
 	}
 
 	public ArmState getArmState() {
@@ -119,6 +92,10 @@ public class Arm extends SubsystemBase {
 
 	public double getEncoderCount() {
 		return armRotater.getEncoder().getPosition();
+	}
+
+	public boolean isSafe() {
+		return getEncoderCount() > 20.0;
 	}
 
 	@Override

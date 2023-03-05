@@ -13,6 +13,7 @@ public class Shuffleboard extends SubsystemBase {
 	private Arm arm;
 	private Gripper gripper;
 	private LED led;
+	private Telescope telescope;
 
 	private Shuffleboard() {
 		drive = Drive.getInstance();
@@ -21,6 +22,7 @@ public class Shuffleboard extends SubsystemBase {
 		arm = Arm.getInstance();
 		gripper = Gripper.getInstance();
 		led = LED.getInstance();
+		telescope = Telescope.getInstance();
 	}
 
 	public static Shuffleboard getInstance() {
@@ -45,7 +47,7 @@ public class Shuffleboard extends SubsystemBase {
 	}
 
 	public void logArm() {
-		SmartDashboard.putBoolean("Is Telescope?", arm.getTeleShiftState());
+		SmartDashboard.putBoolean("Is Telescope?", telescope.getTeleShiftState());
 		SmartDashboard.putNumber("Arm Encoder Value", arm.getEncoderCount());
 		SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
 		SmartDashboard.putBoolean("Brake", arm.getBrakeState());
