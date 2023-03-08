@@ -162,28 +162,28 @@ public class RobotContainer {
 				}, gripper));
 
 		// Operator D-Pad Down: Arm to Cube setpoint
-		new Trigger(() -> operatorController.getPOV() == 180)
-				.onTrue(new SetArmPosition(arm, ArmState.CUBE, false));
+		// new Trigger(() -> operatorController.getPOV() == 180)
+		// 		.onTrue(new SetArmPosition(arm, ArmState.CUBE, false));
 
 		// Operator D-Pad Right: Arm to Awake setpoint
-		new Trigger(() -> operatorController.getPOV() == 90)
-				.onTrue(new SetArmPosition(arm, ArmState.AWAKE, false));
+		// new Trigger(() -> operatorController.getPOV() == 90)
+		// 		.onTrue(new SetArmPosition(arm, ArmState.AWAKE, false));
 
 		// Operator D-Pad Left: Arm to Asleep setpoint
-		new Trigger(() -> operatorController.getPOV() == 270)
-				.onTrue(new SetArmPosition(arm, ArmState.ASLEEP, false));
+		// new Trigger(() -> operatorController.getPOV() == 270)
+		// 		.onTrue(new SetArmPosition(arm, ArmState.ASLEEP, false));
 
 		// Operator D-Pad Up: Arm to Portal setpoint
-		new Trigger(() -> operatorController.getPOV() == 0)
-				.whileTrue(new SetArmPosition(arm, ArmState.PORTAL, false));
+		// new Trigger(() -> operatorController.getPOV() == 0)
+		// 		.whileTrue(new SetArmPosition(arm, ArmState.PORTAL, false));
 
 		// Operator A: Arm to Middle setpoint
 		// new Trigger(() -> operatorController.getAButton())
 		// 		.onTrue(new SetArmPosition(arm, ArmState.MIDDLE, false));
 
 		// Operator B: Arm to High setpoint
-		new Trigger(() -> operatorController.getBButton())
-				.onTrue(new SetArmPosition(arm, ArmState.HIGH, false));
+		// new Trigger(() -> operatorController.getBButton())
+		// 		.onTrue(new SetArmPosition(arm, ArmState.HIGH, false));
 
 		// Operator Right Claw: Arm to Reset setpoint
 		new Trigger(() -> operatorController.getRightStickButton())
@@ -208,12 +208,14 @@ public class RobotContainer {
 
 	private void configureAutoChooser() {
 		autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
-		autoChooser.addOption("Drive Community", new DriveAuto(drive, 90));
-		autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Drive Away", new DriveAuto(drive, 90, 0.4));
+		autoChooser.addOption("Drive to Balance", new DriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Drive to Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("Place Cone", new PlaceCone(arm, gripper, drive, telescope));
 		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripper, drive, telescope));
-		autoChooser.addOption("Auto Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
-		autoChooser.addOption("Drivex2 Balance", new DriveThenDriveThenBalance(drive, colorSensor));
-		autoChooser.addOption("Drive2x Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("God Mode", new GodMode(drive, colorSensor, arm, telescope, gripper));
 
 		SmartDashboard.putData(autoChooser);
 	}

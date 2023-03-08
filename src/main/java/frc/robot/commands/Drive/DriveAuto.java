@@ -7,10 +7,12 @@ public class DriveAuto extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Drive drive;
     private final int counts; 
+    private final double speed;
 
-    public DriveAuto( Drive drive, int counts) {
+    public DriveAuto( Drive drive, int counts, double speed) {
         this.drive = drive;
         this.counts = counts;
+        this.speed = speed;
         
         addRequirements(drive);
     }
@@ -22,7 +24,7 @@ public class DriveAuto extends CommandBase {
 
     @Override
     public void execute() {
-        drive.arcadeDrive(counts < 0 ? -0.2 : 0.2, 0);
+        drive.arcadeDrive(counts < 0 ? -1 * speed : speed, 0);
     }
 
     @Override

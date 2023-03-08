@@ -9,12 +9,14 @@ public class SetArmPosition extends CommandBase {
     private final Arm arm;
     private ArmState state;
     private boolean isFinite;
-    private boolean hasHit = false;;
+    private boolean hasHit = false;
+    private double speed;
 
-    public SetArmPosition(Arm arm, ArmState state, boolean isFinite) {
+    public SetArmPosition(Arm arm, ArmState state, boolean isFinite, double speed) {
         this.arm = arm;
         this.state = state;
         this.isFinite = isFinite;
+        this.speed = speed;
         addRequirements(arm);
     }
 
@@ -29,15 +31,15 @@ public class SetArmPosition extends CommandBase {
         arm.setBrakeOff();
         if (isFinite) {
             if (arm.getEncoderCount() < state.value)
-                arm.setOpenLoop(-0.2);
+                arm.setOpenLoop(-1 * speed);
             else if (arm.getEncoderCount() > state.value)
-                arm.setOpenLoop(0.2);
+                arm.setOpenLoop(speed);
         } else {
             if (!hasHit) {
                 if (arm.getEncoderCount() < state.value - 0.1)
-                    arm.setOpenLoop(-0.2);
+                    arm.setOpenLoop(-1 * speed);
                 else if (arm.getEncoderCount() > state.value + 0.1)
-                    arm.setOpenLoop(0.2);
+                    arm.setOpenLoop(speed);
                 else hasHit = true;
             } else {
                 if (state.value - arm.getEncoderCount() > 0.1) {

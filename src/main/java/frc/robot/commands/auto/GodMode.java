@@ -7,11 +7,11 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Telescope;
 
-public class AllTogetherNow extends SequentialCommandGroup {
+public class GodMode extends SequentialCommandGroup {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-    public AllTogetherNow(Drive drive, ColorSensor colorSensor, Arm arm, Telescope telescope, Gripper gripper) {
+    public GodMode(Drive drive, ColorSensor colorSensor, Arm arm, Telescope telescope, Gripper gripper) {
         addCommands(
-            new PlaceConeDriveOut(arm, gripper, drive, telescope),
+            new PlaceCone(arm, gripper, drive, telescope),
             new DriveThenDriveThenBalanceReverse(drive, colorSensor)
         );
     }

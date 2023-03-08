@@ -32,8 +32,8 @@ public final class Constants {
 
 	public static final class DriveConstants {
 
-		public static final int RIGHT_MASTER_PORT = 2;
-		public static final int RIGHT_SLAVE_PORT = 3;
+		public static final int RIGHT_MASTER_PORT = 3;
+		public static final int RIGHT_SLAVE_PORT = 2;
 		public static final int LEFT_MASTER_PORT = 4;
 		public static final int LEFT_SLAVE_PORT = 5;
 
@@ -49,8 +49,8 @@ public final class Constants {
 		public static final int BRAKE_CHANNEL = 2;
 		public static final int CUBE_ENCODER_COUNT = 28;
 		public static final int AWAKE_ENCODER_COUNT = 29;
-		public static final int MEDIUM_ENCODER_COUNT = 43;
-		public static final int HIGH_ENCODER_COUNT = 60;
+		public static final int MEDIUM_ENCODER_COUNT = 33;
+		public static final int HIGH_ENCODER_COUNT = 58;
 		public static final int ASLEEP_ENCODER_COUNT = 26;
 		public static final int PORTAL_ENCODER_COUNT = 48;
 	}

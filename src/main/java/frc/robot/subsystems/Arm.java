@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
 		MIDDLE(ArmConstants.MEDIUM_ENCODER_COUNT + I),
 		HIGH(ArmConstants.HIGH_ENCODER_COUNT + I),
 		PORTAL(ArmConstants.PORTAL_ENCODER_COUNT + I),
-		INITIAL(0);
+		INITIAL(6);
 
 		public double value;
 
