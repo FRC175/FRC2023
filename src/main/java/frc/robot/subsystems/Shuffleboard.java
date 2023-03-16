@@ -14,6 +14,7 @@ public class Shuffleboard extends SubsystemBase {
 	private Gripper gripper;
 	private LED led;
 	private Telescope telescope;
+	private IRSensor irSensor;
 
 	private Shuffleboard() {
 		drive = Drive.getInstance();
@@ -23,6 +24,7 @@ public class Shuffleboard extends SubsystemBase {
 		gripper = Gripper.getInstance();
 		led = LED.getInstance();
 		telescope = Telescope.getInstance();
+		irSensor = IRSensor.getInstance();
 	}
 
 	public static Shuffleboard getInstance() {
@@ -57,6 +59,11 @@ public class Shuffleboard extends SubsystemBase {
 		SmartDashboard.putBoolean("Is Gripping?", gripper.getGripShiftState());
 	}
 
+	public void logIR() {
+		SmartDashboard.putBoolean("IR Got", irSensor.irDetected());
+		SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
+	}
+
 	public void logLimelight() {
 		SmartDashboard.putNumber("Distance To Grid",
 				limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
@@ -64,7 +71,7 @@ public class Shuffleboard extends SubsystemBase {
 	}
 
 	public void logLED() {
-		SmartDashboard.putNumber("LED Color", led.getColor());
+		SmartDashboard.putString("LED Color", led.getColor().toString());
 	}
 
 	@Override

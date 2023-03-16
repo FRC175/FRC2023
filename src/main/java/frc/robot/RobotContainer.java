@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServerSharedStore;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,25 +12,22 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.arm.RunArm;
-import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.drive.Balancing;
 import frc.robot.commands.drive.DriveAuto;
-import frc.robot.commands.drive.DriveToDist;
+import frc.robot.commands.drive.DriveToIRSnatch;
 import frc.robot.commands.drive.Straightening;
 import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.IRSensor;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pump;
 import frc.robot.subsystems.Shuffleboard;
 import frc.robot.subsystems.Telescope;
-import frc.robot.subsystems.Arm.ArmState;
 
 public class RobotContainer {
 	private final Drive drive;
@@ -39,11 +38,14 @@ public class RobotContainer {
 	private final Shuffleboard shuffleboard;
 	private final Limelight limelight;
 	private final Pump pump;
+	private final IRSensor irSensor;
 	private final Telescope telescope;
 
 	private final XboxController driverController;
 	private final XboxController operatorController;
 	private final SendableChooser<Command> autoChooser;
+
+	private final UsbCamera usbCamera;
 
 	private static RobotContainer instance;
 
@@ -57,6 +59,9 @@ public class RobotContainer {
 		limelight = Limelight.getInstance();
 		pump = Pump.getInstance();
 		telescope = Telescope.getInstance();
+		irSensor = IRSensor.getInstance();
+
+		usbCamera = CameraServer.startAutomaticCapture(1);
 
 		driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
 		operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
@@ -64,6 +69,7 @@ public class RobotContainer {
 		autoChooser = new SendableChooser<>();
 
 		CameraServer.startAutomaticCapture();
+		CameraServerSharedStore.getCameraServerShared().reportUsbCamera(usbCamera.getHandle());
 
 		configureDefaultCommands();
 		configureButtonBindings();
@@ -94,7 +100,9 @@ public class RobotContainer {
 			if (driverController.getAButton()) {
 				drive.bufferDrive(throttle, turn);
 			} else if (driverController.getXButton()) {
-				drive.dampDrive(throttle, turn, 0.25);
+				drive.setOpenLoop(0.25, 0.25);
+			} else if (driverController.getYButton()) {
+				drive.setOpenLoop(0.1,0.1);
 			} else {
 				drive.dampDrive(throttle, turn, 0.5);
 			}
@@ -102,9 +110,7 @@ public class RobotContainer {
 		}, drive));
 
 		// Unextends Arm
-		arm.setDefaultCommand(new RunCommand(() -> {
-			arm.setBrakeOn();
-		}, arm));
+		arm.setDefaultCommand(new RunArm(arm, operatorController));
 
 		// Sends Data to Shuffleboard
 		shuffleboard.setDefaultCommand(new RunCommand(() -> {
@@ -114,17 +120,18 @@ public class RobotContainer {
 			shuffleboard.logArm();
 			shuffleboard.logGripper();
 			shuffleboard.logLED();
+			shuffleboard.logIR();
 		}, shuffleboard));
 	}
 
 	private void configureButtonBindings() {
 		// Driver B Button: Balance
-		new Trigger(() -> driverController.getBButton())
-				.onTrue(new Balancing(drive));
+		// new Trigger(() -> driverController.getBButton())
+		// 		.onTrue(new Balancing(drive));
 
 		// Driver Y Button: DriveToDist
 		new Trigger(() -> driverController.getYButton())
-				.onTrue(new DriveToDist(drive, limelight, limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE, 100));
+				.onTrue(new DriveToIRSnatch(drive, irSensor, gripper, led, driverController));
 
 		// Driver DPAD Down: Straighten
 		new Trigger(() -> driverController.getPOV() == 180)
@@ -137,8 +144,8 @@ public class RobotContainer {
 				}, drive));
 
 		// Operator Right Stick: Arm and Break
-		new Trigger(() -> Math.abs(operatorController.getRightY()) >= 0.10)
-				.onTrue(new RunArm(arm, operatorController));
+		// new Trigger(() -> Math.abs(operatorController.getRightY()) >= 0.10)
+		// 		.onTrue(new RunArm(arm, operatorController));
 
 		// Operator Y: Extend Arm
 		new Trigger(() -> operatorController.getYButton())

@@ -25,19 +25,32 @@ public class RunArm extends CommandBase {
 
   @Override
   public void execute() {
-    // if L and R pulled
-    arm.setBrakeOff();
-    if (!isLock) {
-      arm.setOpenLoop(Math.abs(controller.getRightY()) < 0.1 ? 0 : controller.getRightY() / 3.0);
+    if (Math.abs(controller.getRightY()) > 0.1) {
+      arm.setBrakeOff();
+      isLock = false;
+    } else if (isLock) {
+      arm.setBrakeOff();
     } else {
-      if (goal - arm.getEncoderCount() > 0.1) {
+      arm.setBrakeOn();
+    }
+    if (!isLock) {
+      if (controller.getLeftStickButton() && Math.abs(controller.getRightY()) > 0.1) {
+        arm.setOpenLoop(controller.getRightY() / 6.0);
+      } else if (Math.abs(controller.getRightY()) > 0.1) {
+        arm.setOpenLoop(controller.getRightY() / 3.0);
+      } else {
+        arm.setOpenLoop(0);
+      }
+      
+    } else {
+      if (goal - arm.getEncoderCount() > 0.025) {
         arm.setOpenLoop(-0.1);
       } else {
         arm.setOpenLoop(0);
       }
     }
     if (controller.getAButtonReleased()) {
-      isLock = !isLock;
+      isLock = true;
       goal = arm.getEncoderCount();
     }
     

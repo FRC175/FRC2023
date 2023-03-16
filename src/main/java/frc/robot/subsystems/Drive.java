@@ -100,7 +100,6 @@ public final class Drive extends SubsystemBase {
 
 	@Override
 	public void resetSensors() {
-		gyro.reset();
 		leftMasterEncoder.setPosition(0.0);
 		rightMasterEncoder.setPosition(0.0);
 	}

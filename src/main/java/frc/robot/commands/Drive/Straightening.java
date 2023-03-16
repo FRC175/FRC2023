@@ -5,7 +5,6 @@
 
 package frc.robot.commands.drive;
 
-import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.CommandBase;

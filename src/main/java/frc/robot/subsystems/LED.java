@@ -1,19 +1,21 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.util.Color;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.LEDConstants;
 
 public final class LED extends SubsystemBase {
 
 	private static class ColorNode {
 		ColorNode nextNode = null;
 		ColorNode prevNode = null;
-		double value;
+		Color value;
 
-		public ColorNode(double value) {
+		public ColorNode(Color value) {
 			this.value = value;
 		}
 
@@ -24,9 +26,9 @@ public final class LED extends SubsystemBase {
 	}
 
 	private static class ColorCycle {
-		private ColorNode off = new ColorNode(0.95);
-		private ColorNode yellow = new ColorNode(0.69);
-		private ColorNode purple = new ColorNode(0.91);
+		private ColorNode off = new ColorNode(Color.kGray);
+		private ColorNode yellow = new ColorNode(Color.kYellow);
+		private ColorNode purple = new ColorNode(Color.kPurple);
 		private ColorNode current;
 
 		private ColorCycle() {
@@ -40,21 +42,27 @@ public final class LED extends SubsystemBase {
 			current = forward ? current.nextNode : current.prevNode;
 		}
 
-		public double getColorCode() {
+		public Color getColorCode() {
 			return current.value;
 		}
 	}
 
 	private static LED instance;
 
-	private final Spark blinkin;
+	private final AddressableLED ledStrip;
+	private final AddressableLEDBuffer ledBuffer;
 	private ColorCycle colorCycle;
+	private final int LENGTH = 39;
 
 	private LED() {
-		blinkin = new Spark(LEDConstants.BLINKIN_PORT);
+		ledStrip = new AddressableLED(0);
+		ledBuffer = new AddressableLEDBuffer(LENGTH);
 		colorCycle = new ColorCycle();
 
-		setLED(colorCycle.getColorCode());
+		ledStrip.setLength(ledBuffer.getLength());
+
+		setStripColor(colorCycle.getColorCode());
+		ledStrip.start();
 		sendColorToShuffleboard();
 	}
 
@@ -67,14 +75,10 @@ public final class LED extends SubsystemBase {
 
 	public void cycleColor(boolean forward) {
 		colorCycle.cycle(forward);
-		setLED(colorCycle.getColorCode());
+		setStripColor(colorCycle.getColorCode());
 	}
 
-	public void setLED(double value) {
-		blinkin.set(value);
-	}
-
-	public double getColor() {
+	public Color getColor() {
 		return colorCycle.getColorCode();
 	}
 
@@ -83,11 +87,12 @@ public final class LED extends SubsystemBase {
 
 			@Override
 			public void initSendable(SendableBuilder builder) {
-				builder.addDoubleProperty("ColorWidget", this::get, null);
+				builder.addStringProperty("ColorWidget", this::get, null);
 			}
 
-			double get() {
-				return getColor();
+			String get() {
+				Color color = getColor();
+				return color.red + ", " + color.green + "," + color.blue;
 			}
 
 		});
@@ -96,5 +101,12 @@ public final class LED extends SubsystemBase {
 	@Override
 	public void resetSensors() {
 
+	}
+
+	public void setStripColor(Color color) {
+		for (int i = 0; i < ledBuffer.getLength(); i++) {
+			ledBuffer.setLED(i, color);
+		}
+		ledStrip.setData(ledBuffer);
 	}
 }
