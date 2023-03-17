@@ -10,6 +10,8 @@ public class Balancing extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Drive drive;
 
+    private final double MAG = 25.0;
+
     public Balancing(Drive drive) {
         this.drive = drive;
         addRequirements(drive);
@@ -22,12 +24,12 @@ public class Balancing extends CommandBase {
 
     @Override
     public void execute() {
-        if (drive.getAngle() > 35.0) {
+        if (drive.getAngle() > MAG) {
             drive.arcadeDrive(0.2, 0);
-        } else if (drive.getAngle() < -35.0) {
+        } else if (drive.getAngle() < -1 * MAG) {
             drive.arcadeDrive(-0.2, 0);
         } else {
-            drive.arcadeDrive(drive.getAngle() * 0.15 / 35.0, 0);
+            drive.arcadeDrive(drive.getAngle() * 0.15 / MAG, 0);
         }
         SmartDashboard.putBoolean("is Balancing", true);
     }
