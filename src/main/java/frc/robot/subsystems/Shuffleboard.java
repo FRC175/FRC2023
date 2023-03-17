@@ -61,7 +61,7 @@ public class Shuffleboard extends SubsystemBase {
 
 	public void logIR() {
 		SmartDashboard.putBoolean("IR Got", irSensor.irDetected());
-		// SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
+		SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
 	}
 
 	public void logLimelight() {

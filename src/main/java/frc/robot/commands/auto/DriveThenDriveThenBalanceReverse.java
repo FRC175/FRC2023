@@ -12,7 +12,7 @@ public class DriveThenDriveThenBalanceReverse extends SequentialCommandGroup {
 
     public DriveThenDriveThenBalanceReverse(Drive drive, ColorSensor colorSensor) {
         addCommands(
-            new DriveAuto(drive, -96, 0.2),
+            new DriveAuto(drive, -96, 0.3),
             new WaitCommand(0.1),
             new DriveAuto(drive, 35, 0.2),
             new Balancing(drive)
