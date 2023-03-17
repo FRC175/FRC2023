@@ -6,6 +6,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public final class LED extends SubsystemBase {
@@ -51,6 +52,8 @@ public final class LED extends SubsystemBase {
 
 	private final AddressableLED ledStrip;
 	private final AddressableLEDBuffer ledBuffer;
+	// private final Spark blinkin;
+
 	private ColorCycle colorCycle;
 	private final int LENGTH = 39;
 
@@ -58,6 +61,8 @@ public final class LED extends SubsystemBase {
 		ledStrip = new AddressableLED(0);
 		ledBuffer = new AddressableLEDBuffer(LENGTH);
 		colorCycle = new ColorCycle();
+
+		// blinkin = new Spark(0);
 
 		ledStrip.setLength(ledBuffer.getLength());
 
@@ -108,5 +113,19 @@ public final class LED extends SubsystemBase {
 			ledBuffer.setLED(i, color);
 		}
 		ledStrip.setData(ledBuffer);
+
+		// if (color == Color.kGreen) {
+		// 	blinkin.set(0.77);
+		// } else if (color == Color.kRed) {
+		// 	blinkin.set(0.61);
+		// } else if (color == Color.kYellow) {
+		// 	blinkin.set(0.69);
+		// } else if (color == Color.kPurple) {
+		// 	blinkin.set(0.91);
+		// } else if (color == Color.kGray) {
+		// 	blinkin.set(0.95);
+		// } else {
+		// 	blinkin.set(0.57);
+		// }
 	}
 }

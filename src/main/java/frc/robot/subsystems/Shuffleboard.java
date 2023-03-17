@@ -36,22 +36,22 @@ public class Shuffleboard extends SubsystemBase {
 	}
 
 	public void logDrive() {
-		SmartDashboard.putNumber("Right Master Velocity", drive.getMasterRPMs()[0]);
-		SmartDashboard.putNumber("Left Master Velocity", drive.getMasterRPMs()[1]);
+		// SmartDashboard.putNumber("Right Master Velocity", drive.getMasterRPMs()[0]);
+		// SmartDashboard.putNumber("Left Master Velocity", drive.getMasterRPMs()[1]);
 
 		SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
 	}
 
 	public void logColorSensor() {
-		SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
+		// SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
 
-		SmartDashboard.putString("Color", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
+		// SmartDashboard.putString("Color", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
 	}
 
 	public void logArm() {
 		SmartDashboard.putBoolean("Is Telescope?", telescope.getTeleShiftState());
 		SmartDashboard.putNumber("Arm Encoder Value", arm.getEncoderCount());
-		SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
+		// SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
 		SmartDashboard.putBoolean("Brake", arm.getBrakeState());
 	}
 
@@ -61,13 +61,13 @@ public class Shuffleboard extends SubsystemBase {
 
 	public void logIR() {
 		SmartDashboard.putBoolean("IR Got", irSensor.irDetected());
-		SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
+		// SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
 	}
 
 	public void logLimelight() {
-		SmartDashboard.putNumber("Distance To Grid",
-				limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
-		SmartDashboard.putNumber("Pipe", limelight.pipe);
+		// SmartDashboard.putNumber("Distance To Grid",
+		// 		limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
+		// SmartDashboard.putNumber("Pipe", limelight.pipe);
 	}
 
 	public void logLED() {

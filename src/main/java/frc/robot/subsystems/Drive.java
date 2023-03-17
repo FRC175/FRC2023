@@ -32,6 +32,8 @@ public final class Drive extends SubsystemBase {
 
 		configureSparks();
 
+		resetGyro();
+
 		resetSensors();
 	}
 

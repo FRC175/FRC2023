@@ -25,7 +25,6 @@ import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.IRSensor;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Pump;
 import frc.robot.subsystems.Shuffleboard;
 import frc.robot.subsystems.Telescope;
 
@@ -37,7 +36,6 @@ public class RobotContainer {
 	private final LED led;
 	private final Shuffleboard shuffleboard;
 	private final Limelight limelight;
-	private final Pump pump;
 	private final IRSensor irSensor;
 	private final Telescope telescope;
 
@@ -57,7 +55,6 @@ public class RobotContainer {
 		led = LED.getInstance();
 		shuffleboard = Shuffleboard.getInstance();
 		limelight = Limelight.getInstance();
-		pump = Pump.getInstance();
 		telescope = Telescope.getInstance();
 		irSensor = IRSensor.getInstance();
 
@@ -134,8 +131,8 @@ public class RobotContainer {
 				.onTrue(new DriveToIRSnatch(drive, irSensor, gripper, led, driverController));
 
 		// Driver DPAD Down: Straighten
-		new Trigger(() -> driverController.getPOV() == 180)
-				.onTrue(new Straightening(drive, limelight));
+		// new Trigger(() -> driverController.getPOV() == 180)
+		// 		.onTrue(new Straightening(drive, limelight));
 
 		// Driver Left Claw: Reset Gyro
 		new Trigger(() -> driverController.getLeftStickButton())
@@ -223,6 +220,7 @@ public class RobotContainer {
 		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive, colorSensor));
 		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
 		autoChooser.addOption("God Mode", new GodMode(drive, colorSensor, arm, telescope, gripper));
+		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, colorSensor, arm, telescope, gripper));
 
 		SmartDashboard.putData(autoChooser);
 	}
