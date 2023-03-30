@@ -42,7 +42,7 @@ public class DriveToIRSnatch extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		drive.arcadeDrive(0.15, 0);
+		drive.arcadeDrive(0.20, 0);
 	}
 
 	// Called once the command ends or is interrupted.

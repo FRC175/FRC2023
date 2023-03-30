@@ -44,14 +44,22 @@ public class RunArm extends CommandBase {
       }
       
     } else {
+      if (controller.getLeftY() > 0.10) {
+        goal -= 0.05;
+      } else if (controller.getLeftY() < -0.10) {
+        goal += 0.05;
+      }
       if (goal - arm.getEncoderCount() > 0.025) {
         arm.setOpenLoop(-0.1);
+      } else if (goal - arm.getEncoderCount() < -0.025) {
+        arm.setOpenLoop(0.1);
       } else {
         arm.setOpenLoop(0);
       }
+      SmartDashboard.putNumber("Arm Encoder Goal", goal);
     }
     if (controller.getAButtonReleased()) {
-      isLock = true;
+      isLock = !isLock;
       goal = arm.getEncoderCount();
     }
     SmartDashboard.putBoolean("Is Locked?", isLock);
