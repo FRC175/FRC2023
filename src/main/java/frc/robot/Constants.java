@@ -58,6 +58,8 @@ public final class Constants {
 	public static final class GripperConstants {
 		public static final int GRIPPER_FORWARD_CHANNEL = 0;
 		public static final int GRIPPER_REVERSE_CHANNEL = 1;
+		public static final int GRIPPER_MOTOR_PORT_LEFT = 15;
+		public static final int GRIPPER_MOTOR_PORT_RIGHT = 14;
 	}
 
 	public static final class LEDConstants {

@@ -14,14 +14,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.arm.RunArm;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.drive.DriveAuto;
-import frc.robot.commands.drive.DriveToIRSnatch;
-import frc.robot.commands.drive.Straightening;
+import frc.robot.commands.auto.gripper.*;
+import frc.robot.commands.Drive.DriveAuto;
+import frc.robot.commands.Drive.DriveToIRSnatch;
+import frc.robot.commands.Drive.Straightening;
 import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.GripperClaw;
 import frc.robot.subsystems.IRSensor;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
@@ -31,7 +32,7 @@ import frc.robot.subsystems.Telescope;
 public class RobotContainer {
 	private final Drive drive;
 	private final Arm arm;
-	private final Gripper gripper;
+	private final GripperClaw gripperClaw;
 	private final ColorSensor colorSensor;
 	private final LED led;
 	private final Shuffleboard shuffleboard;
@@ -50,7 +51,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		drive = Drive.getInstance();
 		arm = Arm.getInstance();
-		gripper = Gripper.getInstance();
+		gripperClaw = GripperClaw.getInstance();
 		colorSensor = ColorSensor.getInstance();
 		led = LED.getInstance();
 		shuffleboard = Shuffleboard.getInstance();
@@ -128,7 +129,7 @@ public class RobotContainer {
 
 		// Driver Y Button: DriveToDist
 		new Trigger(() -> driverController.getYButton())
-				.onTrue(new DriveToIRSnatch(drive, irSensor, gripper, led, driverController));
+				.onTrue(new DriveToIRSnatch(drive, irSensor, gripperClaw, led, driverController));
 
 		// Driver DPAD Down: Straighten
 		// new Trigger(() -> driverController.getPOV() == 180)
@@ -155,15 +156,29 @@ public class RobotContainer {
 				.whileTrue(new RunCommand(() -> {
 					telescope.setExtendOff();
 				}, arm));
+		// Operator A: grip grippermotors 
+		new Trigger(() -> operatorController.getAButton())
+				.onTrue(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0.5);
+				}, gripperClaw))
+				.onFalse(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0.0);
+				}));
 
 		// Operator RT: Grip Grip Gripper
 		new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
 				.onTrue(new InstantCommand(() -> {
-					gripper.setGripOpen();
-				}, gripper))
+					gripperClaw.setGripOpen();
+				}, gripperClaw))
 				.onFalse(new InstantCommand(() -> {
-					gripper.setGripClosed();
-				}, gripper));
+					gripperClaw.setGripClosed();
+				}, gripperClaw));
+		
+	
+		
+		
+		
+		
 
 		// Operator D-Pad Down: Arm to Cube setpoint
 		// new Trigger(() -> operatorController.getPOV() == 180)
@@ -215,12 +230,12 @@ public class RobotContainer {
 		autoChooser.addOption("Drive Away", new DriveAuto(drive, 90, 0.4));
 		autoChooser.addOption("Drive to Balance", new DriveThenBalance(drive, colorSensor));
 		autoChooser.addOption("Drive to Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
-		autoChooser.addOption("Place Cone", new PlaceCone(arm, gripper, drive, telescope));
-		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripper, drive, telescope));
+		autoChooser.addOption("Place Cone", new PlaceCone(arm, gripperClaw, drive, telescope));
+		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripperClaw, drive, telescope));
 		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive, colorSensor));
 		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
-		autoChooser.addOption("God Mode", new GodMode(drive, colorSensor, arm, telescope, gripper));
-		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, colorSensor, arm, telescope, gripper));
+		autoChooser.addOption("God Mode", new GodMode(drive, colorSensor, arm, telescope, gripperClaw));
+		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, colorSensor, arm, telescope, gripperClaw));
 
 		SmartDashboard.putData(autoChooser);
 	}

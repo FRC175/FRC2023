@@ -1,17 +1,18 @@
 package frc.robot.commands.auto;
 
-import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.GripperClaw;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.GripperClaw;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class PlaceCone extends SequentialCommandGroup {
-    public PlaceCone(Arm arm, Gripper gripper, Drive drive, Telescope telescope) {
+    public PlaceCone(Arm arm, GripperClaw gripper, Drive drive, Telescope telescope) {
         addCommands(
             new InstantCommand(() -> gripper.setGripClosed()),
             new SetArmPosition(arm, ArmState.MIDDLE, true, 0.3),

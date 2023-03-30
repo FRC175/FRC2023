@@ -11,7 +11,7 @@ public class Shuffleboard extends SubsystemBase {
 	private ColorSensor colorSensor;
 	private Limelight limelight;
 	private Arm arm;
-	private Gripper gripper;
+	private GripperClaw gripper;
 	private LED led;
 	private Telescope telescope;
 	private IRSensor irSensor;
@@ -21,7 +21,7 @@ public class Shuffleboard extends SubsystemBase {
 		colorSensor = ColorSensor.getInstance();
 		limelight = Limelight.getInstance();
 		arm = Arm.getInstance();
-		gripper = Gripper.getInstance();
+		gripper = GripperClaw.getInstance();
 		led = LED.getInstance();
 		telescope = Telescope.getInstance();
 		irSensor = IRSensor.getInstance();

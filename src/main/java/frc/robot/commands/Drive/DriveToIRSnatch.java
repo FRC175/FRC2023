@@ -3,10 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 // Pete (c) is occasionally correct.
 
-package frc.robot.commands.drive;
+package frc.robot.commands.Drive;
 
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.GripperClaw;
 import frc.robot.subsystems.IRSensor;
 import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,11 +18,11 @@ public class DriveToIRSnatch extends CommandBase {
 	// CHANGE THIS TO USED SUBSYSTEM
 	private final Drive drive;
 	private final IRSensor irSensor;
-    private final Gripper gripper;
+    private final GripperClaw gripper;
     private final LED led;
     private final XboxController controller;
 
-	public DriveToIRSnatch(Drive drive, IRSensor irSensor, Gripper gripper, LED led, XboxController controller) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
+	public DriveToIRSnatch(Drive drive, IRSensor irSensor, GripperClaw gripper, LED led, XboxController controller) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
 		this.drive = drive;
 		this.irSensor = irSensor;
         this.gripper = gripper;

@@ -28,7 +28,11 @@ public final class LED extends SubsystemBase {
 
 	private static class ColorCycle {
 		private ColorNode off = new ColorNode(Color.kGray);
+		private ColorNode red = new ColorNode(Color.kRed);
+		private ColorNode orange = new ColorNode(Color.kOrange);
 		private ColorNode yellow = new ColorNode(Color.kYellow);
+		private ColorNode green = new ColorNode(Color.kGreen);
+		private ColorNode blue = new ColorNode(Color.kBlue);
 		private ColorNode purple = new ColorNode(Color.kPurple);
 		private ColorNode current;
 
@@ -39,6 +43,7 @@ public final class LED extends SubsystemBase {
 			current = off;
 		}
 
+		
 		public void cycle(boolean forward) {
 			current = forward ? current.nextNode : current.prevNode;
 		}
@@ -60,7 +65,7 @@ public final class LED extends SubsystemBase {
 	private LED() {
 		ledStrip = new AddressableLED(0);
 		ledBuffer = new AddressableLEDBuffer(LENGTH);
-		colorCycle = new ColorCycle();
+		
 
 		// blinkin = new Spark(0);
 
@@ -86,7 +91,8 @@ public final class LED extends SubsystemBase {
 	public Color getColor() {
 		return colorCycle.getColorCode();
 	}
-
+	
+	
 	public void sendColorToShuffleboard() {
 		SmartDashboard.putData(new Sendable() {
 
