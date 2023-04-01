@@ -1,4 +1,4 @@
-package frc.robot.commands.Drive;
+package frc.robot.commands.drive;
 
 import frc.robot.subsystems.Drive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
