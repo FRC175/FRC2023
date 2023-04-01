@@ -65,7 +65,7 @@ public final class LED extends SubsystemBase {
 	private LED() {
 		ledStrip = new AddressableLED(0);
 		ledBuffer = new AddressableLEDBuffer(LENGTH);
-		
+		colorCycle = new ColorCycle();
 
 		// blinkin = new Spark(0);
 

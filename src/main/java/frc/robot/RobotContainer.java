@@ -14,13 +14,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.arm.RunArm;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.auto.gripper.*;
 import frc.robot.commands.Drive.DriveAuto;
+import frc.robot.commands.Drive.DriveToGoal;
 import frc.robot.commands.Drive.DriveToIRSnatch;
 import frc.robot.commands.Drive.Straightening;
 import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.GripperClaw;
 import frc.robot.subsystems.IRSensor;
@@ -33,7 +32,6 @@ public class RobotContainer {
 	private final Drive drive;
 	private final Arm arm;
 	private final GripperClaw gripperClaw;
-	private final ColorSensor colorSensor;
 	private final LED led;
 	private final Shuffleboard shuffleboard;
 	private final Limelight limelight;
@@ -52,7 +50,6 @@ public class RobotContainer {
 		drive = Drive.getInstance();
 		arm = Arm.getInstance();
 		gripperClaw = GripperClaw.getInstance();
-		colorSensor = ColorSensor.getInstance();
 		led = LED.getInstance();
 		shuffleboard = Shuffleboard.getInstance();
 		limelight = Limelight.getInstance();
@@ -128,8 +125,10 @@ public class RobotContainer {
 		// 		.onTrue(new Balancing(drive));
 
 		// Driver Y Button: DriveToDist
-		new Trigger(() -> driverController.getYButton())
-				.onTrue(new DriveToIRSnatch(drive, irSensor, gripperClaw, led, driverController));
+		new Trigger(() -> driverController
+		.getYButton())
+				// .onTrue(new DriveToIRSnatch(drive, irSensor, gripperClaw, led, driverController));
+				.onTrue(new DriveToGoal(drive, () -> irSensor.irDetected(), 0.2, true));
 
 		// Driver DPAD Down: Straighten
 		// new Trigger(() -> driverController.getPOV() == 180)
@@ -236,14 +235,14 @@ public class RobotContainer {
 	private void configureAutoChooser() {
 		autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
 		autoChooser.addOption("Drive Away", new DriveAuto(drive, 90, 0.4));
-		autoChooser.addOption("Drive to Balance", new DriveThenBalance(drive, colorSensor));
-		autoChooser.addOption("Drive to Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("Drive to Balance", new DriveThenBalance(drive));
+		autoChooser.addOption("Drive to Balance Backward", new DriveThenBalanceReverse(drive));
 		autoChooser.addOption("Place Cone", new PlaceCone(arm, gripperClaw, drive, telescope));
 		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripperClaw, drive, telescope));
-		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive, colorSensor));
-		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
-		autoChooser.addOption("God Mode", new GodMode(drive, colorSensor, arm, telescope, gripperClaw));
-		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, colorSensor, arm, telescope, gripperClaw));
+		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive));
+		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive));
+		autoChooser.addOption("God Mode", new GodMode(drive, arm, telescope, gripperClaw));
+		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, arm, telescope, gripperClaw));
 
 		SmartDashboard.putData(autoChooser);
 	}

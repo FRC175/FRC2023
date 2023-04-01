@@ -22,8 +22,8 @@ public class GripperClaw implements Subsystem {
 
 	private GripperClaw() {
 		
-		gripperMotorLeft = new TalonSRX(Constants.GripperConstants.GRIPPER_MOTOR_PORT_RIGHT);
-		gripperMotorRight = new TalonSRX(0);
+		gripperMotorLeft = new TalonSRX(Constants.GripperConstants.GRIPPER_MOTOR_PORT_LEFT);
+		gripperMotorRight = new TalonSRX(Constants.GripperConstants.GRIPPER_MOTOR_PORT_RIGHT);
 
 		grip = new DoubleSolenoid(Constants.PH_PORT, PneumaticsModuleType.REVPH,
 				GripperConstants.GRIPPER_FORWARD_CHANNEL, GripperConstants.GRIPPER_REVERSE_CHANNEL);
