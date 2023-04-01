@@ -37,7 +37,7 @@ public class GripperClaw implements Subsystem {
 		gripperMotorLeft.setInverted(false);
 		
 		gripperMotorRight.configFactoryDefault();
-		gripperMotorRight.setInverted(true);
+		gripperMotorRight.setInverted(false);
 	}
 
 	public static GripperClaw getInstance() {
@@ -47,7 +47,7 @@ public class GripperClaw implements Subsystem {
 
 		return instance;
 	}
-
+	
 	public void setOpenLoop(double gripPower) {
 		gripperMotorLeft.set(ControlMode.PercentOutput, gripPower);
 		gripperMotorRight.set(ControlMode.PercentOutput, gripPower);

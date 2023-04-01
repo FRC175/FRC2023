@@ -4,7 +4,7 @@ import frc.robot.subsystems.GripperClaw;
 import frc.robot.subsystems.Telescope;
 import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.Drive.DriveAuto;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import edu.wpi.first.wpilibj2.command.InstantCommand;

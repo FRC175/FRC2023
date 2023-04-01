@@ -42,7 +42,7 @@ public final class LED extends SubsystemBase {
 			yellow.setNext(off);
 			current = off;
 		}
-
+		
 		
 		public void cycle(boolean forward) {
 			current = forward ? current.nextNode : current.prevNode;

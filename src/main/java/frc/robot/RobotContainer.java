@@ -156,14 +156,22 @@ public class RobotContainer {
 				.whileTrue(new RunCommand(() -> {
 					telescope.setExtendOff();
 				}, arm));
-		// Operator A: grip grippermotors 
-		new Trigger(() -> operatorController.getAButton())
+		// Operator dpad up: grip Gripper Motors In
+		new Trigger(() -> operatorController.getPOV() == 0)
 				.onTrue(new InstantCommand(() -> {
-					gripperClaw.setOpenLoop(0.5);
+					gripperClaw.setOpenLoop(.5);
 				}, gripperClaw))
 				.onFalse(new InstantCommand(() -> {
 					gripperClaw.setOpenLoop(0.0);
 				}));
+		//Operator dpad down: grip Gripper Motors Out
+		new Trigger(() -> operatorController.getPOV() == 180)
+				.onTrue(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(-0.5);
+				}, gripperClaw))
+				.onFalse(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0);
+				})); 
 
 		// Operator RT: Grip Grip Gripper
 		new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
