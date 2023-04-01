@@ -2,74 +2,80 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.LimelightConstants;
 
 public class Shuffleboard extends SubsystemBase {
 
-    private static Shuffleboard instance;
+	private static Shuffleboard instance;
 
-    private Drive drive;
-    private ColorSensor colorSensor;
-    private Limelight limelight;
-    private Arm arm;
-    private Intake intake; 
-    private Gripper gripper;
+	private Drive drive;
+	private ColorSensor colorSensor;
+	private Limelight limelight;
+	private Arm arm;
+	private GripperClaw gripper;
+	private LED led;
+	private Telescope telescope;
+	private IRSensor irSensor;
 
-    private Shuffleboard() {
-        drive = Drive.getInstance();
-        colorSensor = ColorSensor.getInstance();
-        limelight = Limelight.getInstance();
-        arm = Arm.getInstance();
-        intake = Intake.getInstance(); 
-        gripper = Gripper.getInstance();
-    }
+	private Shuffleboard() {
+		drive = Drive.getInstance();
+		colorSensor = ColorSensor.getInstance();
+		limelight = Limelight.getInstance();
+		arm = Arm.getInstance();
+		gripper = GripperClaw.getInstance();
+		led = LED.getInstance();
+		telescope = Telescope.getInstance();
+		irSensor = IRSensor.getInstance();
+	}
 
-    public static Shuffleboard getInstance() {
-        if (instance == null) {
-            instance = new Shuffleboard();
-        }
+	public static Shuffleboard getInstance() {
+		if (instance == null) {
+			instance = new Shuffleboard();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    public void logDrive() {
-        SmartDashboard.putNumber("Right Master Velocity", drive.getMasterRPMs()[0]);
-        SmartDashboard.putNumber("Left Master Velocity", drive.getMasterRPMs()[1]);
+	public void logDrive() {
+		// SmartDashboard.putNumber("Right Master Velocity", drive.getMasterRPMs()[0]);
+		// SmartDashboard.putNumber("Left Master Velocity", drive.getMasterRPMs()[1]);
 
-        SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
-        SmartDashboard.putNumber("Light Level (V)", drive.getLightVoltage());
+		SmartDashboard.putNumber("Gyro Angle", drive.getAngle());
+	}
 
-        SmartDashboard.putBoolean("Is Lat?", drive.getLatShiftState());
-    }
+	public void logColorSensor() {
+		// SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
 
-    public void logColorSensor() {
-        SmartDashboard.putString("Current Color (rgb)", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
-        SmartDashboard.putBoolean("Is RB?", colorSensor.determineRB());
-        SmartDashboard.putBoolean("Is Cone?", colorSensor.determineGP() == 'y');
-        SmartDashboard.putBoolean("Is Cube?", colorSensor.determineGP() == 'p');
-    }
+		// SmartDashboard.putString("Color", "r: " + colorSensor.getColor().red + " g: " + colorSensor.getColor().green + " b: " + colorSensor.getColor().blue);
+	}
 
-    public void logArm() {
-        SmartDashboard.putBoolean("Is Telescope?", arm.getTeleShiftState());
-        SmartDashboard.putNumber("Encoder value", arm.getEncoderCount());
-        SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
-    } 
-    
-    public void logGripper() {
-        SmartDashboard.putBoolean("Is Gripping?", gripper.getGripShiftState());
-    }
+	public void logArm() {
+		SmartDashboard.putBoolean("Is Telescope?", telescope.getTeleShiftState());
+		SmartDashboard.putNumber("Arm Encoder Value", arm.getEncoderCount());
+		// SmartDashboard.putString("Arm Setpoint", arm.getArmState().name());
+		SmartDashboard.putBoolean("Brake", arm.getBrakeState());
+	}
 
-    public void logLimelight() {
-        SmartDashboard.putNumber("Distance", limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_TAPE : FieldConstants.BREAD_TAPE));
-        SmartDashboard.putNumber("Pipe", limelight.pipe);
-    }
+	public void logGripper() {
+		SmartDashboard.putBoolean("Is Gripping?", gripper.getGripShiftState());
+	}
 
-    public void logIntake() {
-        SmartDashboard.putNumber("Counts", intake.getDeployCounts()); 
-    }
+	public void logIR() {
+		SmartDashboard.putBoolean("IR Got", irSensor.irDetected());
+		SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
+	}
 
-    @Override
-    public void resetSensors() {
-        
-    } 
+	public void logLimelight() {
+		// SmartDashboard.putNumber("Distance To Grid",
+		// 		limelight.getDistance(limelight.pipe == 0 ? FieldConstants.APRIL_GRID : FieldConstants.TAPE));
+		// SmartDashboard.putNumber("Pipe", limelight.pipe);
+	}
+
+	public void logLED() {
+		SmartDashboard.putString("LED Color", led.getColor().toString());
+	}
+
+	@Override
+	public void resetSensors() {
+
+	}
 }

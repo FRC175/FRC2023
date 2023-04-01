@@ -6,46 +6,50 @@ import frc.robot.Constants.LimelightConstants;
 
 public class Limelight extends SubsystemBase {
 
-    private final NetworkTable table;
+	private static Limelight instance;
 
-    public int pipe = 0;
+	private final NetworkTable table;
 
-    private static Limelight instance;
-    
-    private Limelight() {
-        table = NetworkTableInstance.getDefault().getTable("limelight");
-        table.getEntry("pipeline").setNumber(pipe);
-    }
+	public int pipe = 0;
 
-    public static Limelight getInstance() {
-        if (instance == null) {
-            instance = new Limelight();
-        }
-        return instance;
-    }
+	private Limelight() {
+		table = NetworkTableInstance.getDefault().getTable("limelight");
+		table.getEntry("pipeline").setNumber(pipe);
+	}
 
-    public int switchPipes() {
-        if (pipe == 0) pipe = 1;
-        else if (pipe == 1) pipe = 0;
-        table.getEntry("pipeline").setNumber(pipe);
-        return pipe;
-    }
+	public static Limelight getInstance() {
+		if (instance == null) {
+			instance = new Limelight();
+		}
 
-    public double getVerticalAngle() {
-        return table.getEntry("ty").getDouble(0);
-    }
+		return instance;
+	}
 
-    public double getHorizontalAngle() {
-        return table.getEntry("tx").getDouble(0);
-    }
+	public int switchPipes() {
+		if (pipe == 0)
+			pipe = 1;
+		else if (pipe == 1)
+			pipe = 0;
+		table.getEntry("pipeline").setNumber(pipe);
+		return pipe;
+	}
 
-    public double getDistance(double h) {
-        double x = ((h - LimelightConstants.MOUNT_HEIGHT) / Math.tan(Math.toRadians(LimelightConstants.MOUNT_ANGLE + getVerticalAngle()))); 
-        return (x * Math.cos(Math.toRadians(getHorizontalAngle())));
-    }
+	public double getVerticalAngle() {
+		return table.getEntry("ty").getDouble(0);
+	}
 
-    @Override
-    public void resetSensors() {
-        
-    }
+	public double getHorizontalAngle() {
+		return table.getEntry("tx").getDouble(0);
+	}
+
+	public double getDistance(double h) {
+		double x = ((h - LimelightConstants.MOUNT_HEIGHT)
+				/ Math.tan(Math.toRadians(LimelightConstants.MOUNT_ANGLE + getVerticalAngle())));
+		return x;
+	}
+
+	@Override
+	public void resetSensors() {
+
+	}
 }

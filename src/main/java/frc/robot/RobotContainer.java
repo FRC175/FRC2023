@@ -1,10 +1,8 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServerSharedStore;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,215 +12,235 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.commands.DriveThenBalance;
-import frc.robot.commands.SetArmPositionHigh;
-import frc.robot.commands.SetArmPositionLow;
-import frc.robot.commands.SetArmPositionMiddle;
+import frc.robot.commands.arm.RunArm;
+import frc.robot.commands.auto.*;
+import frc.robot.commands.auto.gripper.*;
 import frc.robot.commands.Drive.DriveAuto;
-import frc.robot.commands.Intake.DeployIntake;
-import frc.robot.commands.Intake.ColorSusan;
-import frc.robot.commands.AutoMode.*;
+import frc.robot.commands.Drive.DriveToIRSnatch;
+import frc.robot.commands.Drive.Straightening;
+import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Gripper;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.GripperClaw;
+import frc.robot.subsystems.IRSensor;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LazySusan;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shuffleboard;
-import frc.robot.subsystems.ColorSensor; 
+import frc.robot.subsystems.Telescope;
 
 public class RobotContainer {
-  private final Drive drive;
-  private final Intake intake;
-  private final Arm arm;
-  private final LazySusan lazySusan;
-  private final Gripper gripper;
-  private final ColorSensor colorSensor;
-  private final LED led;
-  private final Shuffleboard shuffleboard;
-  private final Limelight limelight;
+	private final Drive drive;
+	private final Arm arm;
+	private final GripperClaw gripperClaw;
+	private final ColorSensor colorSensor;
+	private final LED led;
+	private final Shuffleboard shuffleboard;
+	private final Limelight limelight;
+	private final IRSensor irSensor;
+	private final Telescope telescope;
 
-  private final XboxController driverController;
-  private final XboxController operatorController;
-  private final SendableChooser<Command> autoChooser;
+	private final XboxController driverController;
+	private final XboxController operatorController;
+	private final SendableChooser<Command> autoChooser;
 
-  private static RobotContainer instance;
+	private final UsbCamera usbCamera;
 
-  public RobotContainer() {
-    drive = Drive.getInstance();
-    intake = Intake.getInstance();
-    arm = Arm.getInstance();
-    lazySusan = LazySusan.getInstance();
-    gripper = Gripper.getInstance();
-    colorSensor = ColorSensor.getInstance();
-    led = LED.getInstance();
-    shuffleboard = Shuffleboard.getInstance();
-    limelight = Limelight.getInstance();
+	private static RobotContainer instance;
 
-    driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
-    operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
+	public RobotContainer() {
+		drive = Drive.getInstance();
+		arm = Arm.getInstance();
+		gripperClaw = GripperClaw.getInstance();
+		colorSensor = ColorSensor.getInstance();
+		led = LED.getInstance();
+		shuffleboard = Shuffleboard.getInstance();
+		limelight = Limelight.getInstance();
+		telescope = Telescope.getInstance();
+		irSensor = IRSensor.getInstance();
 
-    autoChooser = new SendableChooser<>();
+		usbCamera = CameraServer.startAutomaticCapture(1);
 
-    CameraServer.startAutomaticCapture();
+		driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
+		operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT);
 
-    configureDefaultCommands();
-    configureButtonBindings();
-    configureAutoChooser();
-  }
+		autoChooser = new SendableChooser<>();
 
-  public static RobotContainer getInstance() {
-    if (instance == null) {
-        instance = new RobotContainer();
-    }
+		CameraServer.startAutomaticCapture();
+		CameraServerSharedStore.getCameraServerShared().reportUsbCamera(usbCamera.getHandle());
 
-    return instance;
-  }
+		configureDefaultCommands();
+		configureButtonBindings();
+		configureAutoChooser();
+	}
 
-  private void configureDefaultCommands() {
-    // Arcade Drive and Lateral Drive
-    drive.setDefaultCommand(new RunCommand(() -> {
-      double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-      double turn = -1 * driverController.getLeftX();
-      if (driverController.getRightBumper()) {
-        drive.extendLat(true);
-        drive.latDrive(throttle);
-        drive.arcadeDrive(0, 0);
-      } else {
-        drive.latDrive(0);
-        drive.extendLat(false);
-        drive.arcadeDrive(throttle, turn);
-        
-      }
-    }, drive));
+	public static RobotContainer getInstance() {
+		if (instance == null) {
+			instance = new RobotContainer();
+		}
 
-    // Unextends Arm
-    arm.setDefaultCommand(new RunCommand(() -> {
-      arm.extend(false);
-      arm.setBrake(true);
-      arm.setOpenLoop(0.0);
-    }, arm));
+		return instance;
+	}
 
-    //Ungrips Gripper
-    gripper.setDefaultCommand(new RunCommand(() -> {
-      gripper.gripped(false); 
-    }, gripper));
+	private double deadband(double input) {
+		if (Math.abs(input) < 0.1) {
+			return 0;
+		} else {
+			return input;
+		}
+	}
 
-    // Stops intake
-    // intake.setDefaultCommand(new DeployIntake(intake, false));
+	private void configureDefaultCommands() {
+		// Accel Drive and Lateral Drive
+		drive.setDefaultCommand(new RunCommand(() -> {
+			double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
+			double turn = deadband(driverController.getLeftX());
+			if (driverController.getAButton()) {
+				drive.bufferDrive(throttle, turn);
+			} else if (driverController.getXButton()) {
+				drive.setOpenLoop(0.25, 0.25);
+			} else if (driverController.getYButton()) {
+				drive.setOpenLoop(0.1,0.1);
+			} else {
+				drive.dampDrive(throttle, turn, 0.5);
+			}
+			
+		}, drive));
 
-    // Sets LED to gray
-    led.setDefaultCommand(new RunCommand(() -> {
-      led.setLED(0.95);
-    }, led));
-    
-    lazySusan.setDefaultCommand(new RunCommand(() -> {
-      lazySusan.susanSpin(0);
-    },lazySusan));
-    
+		// Unextends Arm
+		arm.setDefaultCommand(new RunArm(arm, operatorController));
 
-    shuffleboard.setDefaultCommand(new RunCommand(() -> {
-      shuffleboard.logColorSensor();
-      shuffleboard.logDrive();
-      shuffleboard.logLimelight();
-      shuffleboard.logArm();
-      shuffleboard.logIntake();
-      shuffleboard.logGripper();
-    }, shuffleboard));
-  }
+		// Sends Data to Shuffleboard
+		shuffleboard.setDefaultCommand(new RunCommand(() -> {
+			shuffleboard.logColorSensor();
+			shuffleboard.logDrive();
+			shuffleboard.logLimelight();
+			shuffleboard.logArm();
+			shuffleboard.logGripper();
+			shuffleboard.logLED();
+			shuffleboard.logIR();
+		}, shuffleboard));
+	}
 
-  private void configureButtonBindings() {
-    // Operator Y: Extend Arm
-    new Trigger(() -> operatorController.getYButton())
-    .whileTrue(new RunCommand(() -> {
-      arm.extend(true);
-    }, arm));
+	private void configureButtonBindings() {
+		// Driver B Button: Balance
+		// new Trigger(() -> driverController.getBButton())
+		// 		.onTrue(new Balancing(drive));
 
-    // Operator X: Grip Gripper
-    new Trigger(() -> operatorController.getXButton())
-    .whileTrue(new RunCommand(() -> {
-    gripper.gripped(true);
-    }, gripper));
+		// Driver Y Button: DriveToDist
+		new Trigger(() -> driverController.getYButton())
+				.onTrue(new DriveToIRSnatch(drive, irSensor, gripperClaw, led, driverController));
 
-    // Operator B: Run Intake
-    new Trigger(() -> operatorController.getBButton())
-    .whileTrue(new RunCommand(() -> {
-      intake.setRunOpenLoop(0.3);
-    }, intake));
+		// Driver DPAD Down: Straighten
+		// new Trigger(() -> driverController.getPOV() == 180)
+		// 		.onTrue(new Straightening(drive, limelight));
 
-    // Driver X: Deploy Intake 
-    new Trigger(() -> driverController.getXButton())
-    .whileTrue(new DeployIntake(intake, false));
-     
-    // Driver D-Pad Right: Arm to Low setpoint
-    new Trigger(() -> driverController.getPOV() == 90)
-    .onTrue(new SetArmPositionLow(arm));
+		// Driver Left Claw: Reset Gyro
+		new Trigger(() -> driverController.getLeftStickButton())
+				.onTrue(new InstantCommand(() -> {
+					drive.resetGyro();
+				}, drive));
 
-    // Driver Y: Retract Intake 
-    new Trigger(() -> driverController.getYButton())
-    .whileTrue(new DeployIntake(intake, true)); 
-     
-    // Driver D-Pad Left: Arm to Low setpoint
-    new Trigger(() -> driverController.getPOV() == 270)
-    .onTrue(new SetArmPositionMiddle(arm));
+		// Operator Right Stick: Arm and Break
+		// new Trigger(() -> Math.abs(operatorController.getRightY()) >= 0.10)
+		// 		.onTrue(new RunArm(arm, operatorController));
 
-    //Driver D-Pad Up: Arm to High setpoint
-    new Trigger(() -> driverController.getPOV() == 0)
-    .onTrue(new SetArmPositionHigh(arm));
+		// Operator Y: Extend Arm
+		new Trigger(() -> operatorController.getYButton())
+				.whileTrue(new RunCommand(() -> {
+					telescope.setExtendOn();
+				}, arm));
 
+		// Operator X: Unextend Arm
+		new Trigger(() -> operatorController.getXButton())
+				.whileTrue(new RunCommand(() -> {
+					telescope.setExtendOff();
+				}, arm));
+		// Operator A: grip grippermotors 
+		new Trigger(() -> operatorController.getAButton())
+				.onTrue(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0.5);
+				}, gripperClaw))
+				.onFalse(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0.0);
+				}));
 
-    // Operator Left: Yellow LED
-    new Trigger(() -> operatorController.getPOV() == 270)
-    .whileTrue(new RunCommand(() -> {
-      led.setLED(0.69);
-    }, led));
+		// Operator RT: Grip Grip Gripper
+		new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
+				.onTrue(new InstantCommand(() -> {
+					gripperClaw.setGripOpen();
+				}, gripperClaw))
+				.onFalse(new InstantCommand(() -> {
+					gripperClaw.setGripClosed();
+				}, gripperClaw));
+		
+	
+		
+		
+		
+		
 
-    // Operator Right: Violet LED
-    new Trigger(() -> operatorController.getPOV() == 90)
-    .whileTrue(new RunCommand(() -> {
-      led.setLED(0.91);
-    }, led));
+		// Operator D-Pad Down: Arm to Cube setpoint
+		// new Trigger(() -> operatorController.getPOV() == 180)
+		// 		.onTrue(new SetArmPosition(arm, ArmState.CUBE, false));
 
-    // Operator START: Switch Pipes
-    new Trigger(() -> operatorController.getStartButton())
-    .toggleOnTrue(new InstantCommand(() -> {
-      limelight.switchPipes();
-    }, limelight));
+		// Operator D-Pad Right: Arm to Awake setpoint
+		// new Trigger(() -> operatorController.getPOV() == 90)
+		// 		.onTrue(new SetArmPosition(arm, ArmState.AWAKE, false));
 
+		// Operator D-Pad Left: Arm to Asleep setpoint
+		// new Trigger(() -> operatorController.getPOV() == 270)
+		// 		.onTrue(new SetArmPosition(arm, ArmState.ASLEEP, false));
 
-   // Operator Right Bumper: Spin LazySusan
-   new Trigger(() -> operatorController.getRightBumper())
-   .whileTrue(new RunCommand(() -> {
-     lazySusan.susanSpin(0.5);
-   }, lazySusan));
+		// Operator D-Pad Up: Arm to Portal setpoint
+		// new Trigger(() -> operatorController.getPOV() == 0)
+		// 		.whileTrue(new SetArmPosition(arm, ArmState.PORTAL, false));
 
-   // Operator Left Bumpoer: Spin LazySusan
-   new Trigger(() -> operatorController.getLeftBumper())
-   .whileTrue(new RunCommand(() -> {
-      lazySusan.susanSpin(-0.5);
-   }, lazySusan));
+		// Operator A: Arm to Middle setpoint
+		// new Trigger(() -> operatorController.getAButton())
+		// 		.onTrue(new SetArmPosition(arm, ArmState.MIDDLE, false));
 
-   // Operator Down: cColor-Dependant Spin Lazy Susan
-   new Trigger(() -> operatorController.getPOV() == 180)
-   .whileTrue(new ColorSusan(colorSensor, lazySusan));
+		// Operator B: Arm to High setpoint
+		// new Trigger(() -> operatorController.getBButton())
+		// 		.onTrue(new SetArmPosition(arm, ArmState.HIGH, false));
 
-  }
- 
+		// Operator Right Claw: Arm to Reset setpoint
+		new Trigger(() -> operatorController.getRightStickButton())
+				.onTrue(new InstantCommand(() -> {
+					arm.resetSensors();
+				}, arm));
 
-  private void configureAutoChooser() {
-    autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
-    autoChooser.addOption("Drive Tarmac", new DriveAuto(drive, 70));
-    autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
-    autoChooser.addOption("Drive and Intake", new DriveIntake(intake, drive)); 
-    autoChooser.addOption("Low node Score", new PlaceConePlaceHolder(arm, drive, intake));     
-    autoChooser.addOption("Auto Balance", new DriveThenBalance(drive, colorSensor));
+		// Operator RB: Cycle LED Right
+		new Trigger(() -> operatorController.getRightBumper())
+				.onTrue(new CycleColor(led, true));
 
-    SmartDashboard.putData(autoChooser);
-  }
+		// Operator LB: Cycle LED Left
+		new Trigger(() -> operatorController.getLeftBumper())
+				.onTrue(new CycleColor(led, false));
 
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-  }
+		// Driver START: Switch Pipes
+		new Trigger(() -> driverController.getStartButton())
+				.toggleOnTrue(new InstantCommand(() -> {
+					limelight.switchPipes();
+				}, limelight));
+	}
+
+	private void configureAutoChooser() {
+		autoChooser.setDefaultOption("Nothing", new WaitCommand(0));
+		autoChooser.addOption("Drive Away", new DriveAuto(drive, 90, 0.4));
+		autoChooser.addOption("Drive to Balance", new DriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Drive to Balance Backward", new DriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("Place Cone", new PlaceCone(arm, gripperClaw, drive, telescope));
+		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripperClaw, drive, telescope));
+		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive, colorSensor));
+		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive, colorSensor));
+		autoChooser.addOption("God Mode", new GodMode(drive, colorSensor, arm, telescope, gripperClaw));
+		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, colorSensor, arm, telescope, gripperClaw));
+
+		SmartDashboard.putData(autoChooser);
+	}
+
+	public Command getAutonomousCommand() {
+		return autoChooser.getSelected();
+	}
 }
