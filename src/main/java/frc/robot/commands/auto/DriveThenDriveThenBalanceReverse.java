@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.drive.Balancing;
 import frc.robot.commands.drive.DriveAuto;
-import frc.robot.subsystems.ColorSensor;
+
 import frc.robot.subsystems.Drive;
 
 public class DriveThenDriveThenBalanceReverse extends SequentialCommandGroup {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
-    public DriveThenDriveThenBalanceReverse(Drive drive, ColorSensor colorSensor) {
+    public DriveThenDriveThenBalanceReverse(Drive drive) {
         addCommands(
             new DriveAuto(drive, -96, 0.3),
             new WaitCommand(0.1),

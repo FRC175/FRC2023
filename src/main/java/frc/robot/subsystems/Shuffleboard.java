@@ -8,7 +8,7 @@ public class Shuffleboard extends SubsystemBase {
 	private static Shuffleboard instance;
 
 	private Drive drive;
-	private ColorSensor colorSensor;
+	// private ColorSensor colorSensor;
 	private Limelight limelight;
 	private Arm arm;
 	private GripperClaw gripper;
@@ -18,7 +18,7 @@ public class Shuffleboard extends SubsystemBase {
 
 	private Shuffleboard() {
 		drive = Drive.getInstance();
-		colorSensor = ColorSensor.getInstance();
+		// colorSensor = ColorSensor.getInstance();
 		limelight = Limelight.getInstance();
 		arm = Arm.getInstance();
 		gripper = GripperClaw.getInstance();
