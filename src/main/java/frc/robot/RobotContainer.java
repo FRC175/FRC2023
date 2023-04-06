@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.arm.RunArm;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.Drive.DriveAuto;
-import frc.robot.commands.Drive.DriveToGoal;
-import frc.robot.commands.Drive.DriveToIRSnatch;
-import frc.robot.commands.Drive.Straightening;
-import frc.robot.commands.Drive.DriveAuto;
-import frc.robot.commands.Drive.DriveToGoal;
-import frc.robot.commands.Drive.DriveToIRSnatch;
-import frc.robot.commands.Drive.Straightening;
+import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.drive.DriveToGoal;
+import frc.robot.commands.drive.DriveToIRSnatch;
+import frc.robot.commands.drive.Straightening;
+import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.drive.DriveToGoal;
+import frc.robot.commands.drive.DriveToIRSnatch;
+import frc.robot.commands.drive.Straightening;
 import frc.robot.commands.led.CycleColor;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
@@ -162,15 +162,15 @@ public class RobotContainer {
 		// Operator dpad up: grip Gripper Motors In
 		new Trigger(() -> operatorController.getPOV() == 0)
 				.onTrue(new InstantCommand(() -> {
-					gripperClaw.setOpenLoop(.5);
+					gripperClaw.setOpenLoop(-0.25);
 				}, gripperClaw))
 				.onFalse(new InstantCommand(() -> {
 					gripperClaw.setOpenLoop(0.0);
 				}));
-		//Operator dpad down: grip Gripper Motors Out
-		new Trigger(() -> operatorController.getPOV() == 180)
+		//Operator left trigger: grip Gripper Motors Out
+		new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.1)
 				.onTrue(new InstantCommand(() -> {
-					gripperClaw.setOpenLoop(-0.5);
+					gripperClaw.setOpenLoop(0.5);
 				}, gripperClaw))
 				.onFalse(new InstantCommand(() -> {
 					gripperClaw.setOpenLoop(0);
@@ -247,6 +247,7 @@ public class RobotContainer {
 		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive));
 		autoChooser.addOption("God Mode", new GodMode(drive, arm, telescope, gripperClaw));
 		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, arm, telescope, gripperClaw));
+		autoChooser.addOption("Test", new DriveAuto(drive, 5, 0.1));
 
 		SmartDashboard.putData(autoChooser);
 	}

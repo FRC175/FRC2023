@@ -45,13 +45,13 @@ public class RunArm extends CommandBase {
       
     } else {
       if (controller.getLeftY() > 0.10) {
-        goal -= 0.05;
+        goal -= 0.1;
       } else if (controller.getLeftY() < -0.10) {
-        goal += 0.05;
+        goal += 0.1;
       }
-      if (goal - arm.getEncoderCount() > 0.025) {
+      if (goal - arm.getEncoderCount() > 0.040) {
         arm.setOpenLoop(-0.1);
-      } else if (goal - arm.getEncoderCount() < -0.025) {
+      } else if (goal - arm.getEncoderCount() < -0.040) {
         arm.setOpenLoop(0.1);
       } else {
         arm.setOpenLoop(0);

@@ -3,11 +3,8 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-import frc.robot.commands.Drive.Balancing;
-import frc.robot.commands.Drive.DriveAuto;
-
-import frc.robot.commands.Drive.Balancing;
-import frc.robot.commands.Drive.DriveAuto;
+import frc.robot.commands.drive.Balancing;
+import frc.robot.commands.drive.DriveAuto;
 
 
 import frc.robot.subsystems.Drive;

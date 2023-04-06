@@ -17,12 +17,12 @@ public class Arm extends SubsystemBase {
 	public static int I = 5;
 
 	public enum ArmState {
-		ASLEEP(ArmConstants.ASLEEP_ENCODER_COUNT + I),
-		AWAKE(ArmConstants.AWAKE_ENCODER_COUNT + I),
-		CUBE(ArmConstants.CUBE_ENCODER_COUNT + I),
-		MIDDLE(ArmConstants.MEDIUM_ENCODER_COUNT + I),
-		HIGH(ArmConstants.HIGH_ENCODER_COUNT + I),
-		PORTAL(ArmConstants.PORTAL_ENCODER_COUNT + I),
+		ASLEEP(ArmConstants.ASLEEP_ENCODER_COUNT),
+		AWAKE(ArmConstants.AWAKE_ENCODER_COUNT),
+		CUBE(ArmConstants.CUBE_ENCODER_COUNT),
+		MIDDLE(ArmConstants.MEDIUM_ENCODER_COUNT),
+		HIGH(ArmConstants.HIGH_ENCODER_COUNT),
+		PORTAL(ArmConstants.PORTAL_ENCODER_COUNT),
 		INITIAL(6);
 
 		public double value;
@@ -95,7 +95,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public boolean isSafe() {
-		return getEncoderCount() > 20.0;
+		return getEncoderCount() > 13.0;
 	}
 
 	@Override

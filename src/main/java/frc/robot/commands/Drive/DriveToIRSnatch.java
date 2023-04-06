@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 // Pete (c) is occasionally correct.
 
-package frc.robot.commands.Drive;
+package frc.robot.commands.drive;
 
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.GripperClaw;
