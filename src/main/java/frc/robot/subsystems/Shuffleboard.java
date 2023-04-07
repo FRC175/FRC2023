@@ -57,11 +57,12 @@ public class Shuffleboard extends SubsystemBase {
 
 	public void logGripper() {
 		SmartDashboard.putBoolean("Is Gripping?", gripper.getGripShiftState());
+		SmartDashboard.putNumber("Gripper Wheel State", gripper.getWheelOutput());
 	}
 
 	public void logIR() {
-		SmartDashboard.putBoolean("IR Got", irSensor.irDetected());
-		SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
+		// SmartDashboard.putBoolean("IR Got", irSensor.irDetected());
+		// SmartDashboard.putNumber("IR Reading", irSensor.getIRValue());
 	}
 
 	public void logLimelight() {

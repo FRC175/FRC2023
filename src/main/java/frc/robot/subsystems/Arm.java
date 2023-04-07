@@ -95,7 +95,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public boolean isSafe() {
-		return getEncoderCount() > 13.0;
+		return getEncoderCount() > 8.0;
 	}
 
 	@Override

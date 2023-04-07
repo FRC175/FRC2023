@@ -18,11 +18,13 @@ import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveToGoal;
 import frc.robot.commands.drive.DriveToIRSnatch;
 import frc.robot.commands.drive.Straightening;
+import frc.robot.commands.gripper.CubeIntake;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.drive.DriveToGoal;
 import frc.robot.commands.drive.DriveToIRSnatch;
 import frc.robot.commands.drive.Straightening;
 import frc.robot.commands.led.CycleColor;
+import frc.robot.commands.led.RainbowCycle;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.GripperClaw;
@@ -49,6 +51,8 @@ public class RobotContainer {
 	private final UsbCamera usbCamera;
 
 	private static RobotContainer instance;
+
+	private boolean isRainbow = false;
 
 	public RobotContainer() {
 		drive = Drive.getInstance();
@@ -121,6 +125,12 @@ public class RobotContainer {
 			shuffleboard.logLED();
 			shuffleboard.logIR();
 		}, shuffleboard));
+
+		led.setDefaultCommand(new RunCommand(() -> {
+			if (isRainbow) {
+				led.rainbow();
+			}
+		}, led));
 	}
 
 	private void configureButtonBindings() {
@@ -129,10 +139,9 @@ public class RobotContainer {
 		// 		.onTrue(new Balancing(drive));
 
 		// Driver Y Button: DriveToDist
-		new Trigger(() -> driverController
-		.getYButton())
-				// .onTrue(new DriveToIRSnatch(drive, irSensor, gripperClaw, led, driverController));
-				.onTrue(new DriveToGoal(drive, () -> irSensor.irDetected(), 0.2, true));
+		// new Trigger(() -> driverController.getYButton())
+		// 		// .onTrue(new DriveToIRSnatch(drive, irSensor, gripperClaw, led, driverController));
+		// 		.onTrue(new DriveToGoal(drive, () -> irSensor.irDetected(), 0.2, true));
 
 		// Driver DPAD Down: Straighten
 		// new Trigger(() -> driverController.getPOV() == 180)
@@ -159,7 +168,7 @@ public class RobotContainer {
 				.whileTrue(new RunCommand(() -> {
 					telescope.setExtendOff();
 				}, arm));
-		// Operator dpad up: grip Gripper Motors In
+		// Operator dpad up: grip Gripper Motors Out
 		new Trigger(() -> operatorController.getPOV() == 0)
 				.onTrue(new InstantCommand(() -> {
 					gripperClaw.setOpenLoop(-0.25);
@@ -167,10 +176,10 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(() -> {
 					gripperClaw.setOpenLoop(0.0);
 				}));
-		//Operator left trigger: grip Gripper Motors Out
+		//Operator left trigger: grip Gripper Motors In
 		new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.1)
-				.onTrue(new InstantCommand(() -> {
-					gripperClaw.setOpenLoop(0.5);
+				.onTrue(new RunCommand(() -> {
+					gripperClaw.setOpenLoop(operatorController.getLeftTriggerAxis() * 0.7);
 				}, gripperClaw))
 				.onFalse(new InstantCommand(() -> {
 					gripperClaw.setOpenLoop(0);
@@ -184,6 +193,22 @@ public class RobotContainer {
 				.onFalse(new InstantCommand(() -> {
 					gripperClaw.setGripClosed();
 				}, gripperClaw));
+
+		new Trigger(() -> operatorController.getPOV() == 180)
+				.onTrue(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0.50);
+				}, gripperClaw))
+				.onFalse(new InstantCommand(() -> {
+					gripperClaw.setOpenLoop(0.0);
+				}, gripperClaw));
+
+		new Trigger(() -> driverController.getRightBumper())
+				.onTrue(new InstantCommand(() -> {
+					isRainbow = !isRainbow;
+				}));
+
+		new Trigger(() -> operatorController.getPOV() == 90)
+				.onTrue(new CubeIntake(gripperClaw));
 		
 	
 		
@@ -229,6 +254,8 @@ public class RobotContainer {
 		new Trigger(() -> operatorController.getLeftBumper())
 				.onTrue(new CycleColor(led, false));
 
+		
+
 		// Driver START: Switch Pipes
 		new Trigger(() -> driverController.getStartButton())
 				.toggleOnTrue(new InstantCommand(() -> {
@@ -242,12 +269,12 @@ public class RobotContainer {
 		autoChooser.addOption("Drive to Balance", new DriveThenBalance(drive));
 		autoChooser.addOption("Drive to Balance Backward", new DriveThenBalanceReverse(drive));
 		autoChooser.addOption("Place Cone", new PlaceCone(arm, gripperClaw, drive, telescope));
-		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripperClaw, drive, telescope));
+		autoChooser.addOption("Place Cone Leave", new PlaceConeDriveOut(arm, gripperClaw, drive, telescope, led));
 		autoChooser.addOption("Drive Out then Balance", new DriveThenDriveThenBalance(drive));
 		autoChooser.addOption("Drive Out then Balance Reverse", new DriveThenDriveThenBalanceReverse(drive));
 		autoChooser.addOption("God Mode", new GodMode(drive, arm, telescope, gripperClaw));
-		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, arm, telescope, gripperClaw));
-		autoChooser.addOption("Test", new DriveAuto(drive, 5, 0.1));
+		autoChooser.addOption("God Mode for Wimps", new GodModeForBabies(drive, arm, telescope, gripperClaw, led));
+		autoChooser.addOption("Rainbow Test", new RainbowCycle(led, 300));
 
 		SmartDashboard.putData(autoChooser);
 	}

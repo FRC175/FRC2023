@@ -17,6 +17,8 @@ public class GripperClaw implements Subsystem {
 	public final TalonSRX gripperMotorLeft, gripperMotorRight;
 
 	private final DoubleSolenoid grip;
+
+	private double currentPower = 0;
 	
 	private boolean gripGripped;
 
@@ -48,9 +50,14 @@ public class GripperClaw implements Subsystem {
 		return instance;
 	}
 	
+	/**
+	 * <h1>Positive = intake</h1>
+	 * <h1>Negative = outtake</h1?
+	 */
 	public void setOpenLoop(double gripPower) {
 		gripperMotorLeft.set(ControlMode.PercentOutput, gripPower);
 		gripperMotorRight.set(ControlMode.PercentOutput, gripPower);
+		currentPower = gripPower;
 	}
 
 
@@ -71,6 +78,10 @@ public class GripperClaw implements Subsystem {
 
 	public boolean getGripShiftState() {
 		return gripGripped;
+	}
+
+	public double getWheelOutput() {
+		return currentPower;
 	}
 
 	

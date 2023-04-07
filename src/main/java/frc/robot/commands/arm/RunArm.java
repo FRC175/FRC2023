@@ -14,6 +14,11 @@ public class RunArm extends CommandBase {
   
   private double goal;
 
+  /**
+   * <h1>Maintains the arm's entire current state</h1>
+   * <h2>The locking function is run off A button</h2>
+   * 
+   */
   public RunArm(Arm arm, XboxController controller) {
     this.arm = arm;
     this.controller = controller;

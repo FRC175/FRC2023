@@ -26,6 +26,11 @@ public final class LED extends SubsystemBase {
 		}
 	}
 
+	private interface CC {
+		public abstract void cycle(boolean forward);
+		public abstract Color getColorCode();
+	}
+
 	private static class ColorCycle {
 		private ColorNode off = new ColorNode(Color.kGray);
 		private ColorNode red = new ColorNode(Color.kRed);
@@ -40,7 +45,60 @@ public final class LED extends SubsystemBase {
 			off.setNext(purple);
 			purple.setNext(yellow);
 			yellow.setNext(off);
+
 			current = off;
+		}
+		
+		
+		public void cycle(boolean forward) {
+			current = forward ? current.nextNode : current.prevNode;
+		}
+
+		public Color getColorCode() {
+			return current.value;
+		}
+	}
+
+	private static class ColorCycleRainbow {
+		private ColorNode red = new ColorNode(Color.kRed);
+		private ColorNode orange = new ColorNode(Color.kOrange);
+		private ColorNode yellow = new ColorNode(Color.kYellow);
+		private ColorNode green = new ColorNode(Color.kGreen);
+		private ColorNode blue = new ColorNode(Color.kBlue);
+		private ColorNode purple = new ColorNode(Color.kPurple);
+		private ColorNode current;
+
+		private ColorCycleRainbow() {
+			red.setNext(orange);
+			orange.setNext(yellow);
+			yellow.setNext(green);
+			green.setNext(blue);
+			blue.setNext(purple);
+			purple.setNext(red);
+
+			current = red;
+		}
+		
+		
+		public void cycle(boolean forward) {
+			current = forward ? current.nextNode : current.prevNode;
+		}
+
+		public Color getColorCode() {
+			return current.value;
+		}
+	}
+
+	private static class ColorCycleYellowBlack {
+		private ColorNode yellow = new ColorNode(Color.kYellow);
+		private ColorNode black = new ColorNode(Color.kBlack);
+		private ColorNode current;
+
+		private ColorCycleYellowBlack() {
+			yellow.setNext(black);
+			black.setNext(yellow);
+
+			current = yellow;
 		}
 		
 		
@@ -60,12 +118,18 @@ public final class LED extends SubsystemBase {
 	// private final Spark blinkin;
 
 	private ColorCycle colorCycle;
+	private static ColorCycleRainbow colorCycleRainbow;
+	private static ColorCycleYellowBlack colorCycleYellowBlack;
 	private final int LENGTH = 39;
+
+	private int cycle = 0;
 
 	private LED() {
 		ledStrip = new AddressableLED(0);
 		ledBuffer = new AddressableLEDBuffer(LENGTH);
 		colorCycle = new ColorCycle();
+		colorCycleRainbow = new ColorCycleRainbow();
+		colorCycleYellowBlack = new ColorCycleYellowBlack();
 
 		// blinkin = new Spark(0);
 
@@ -86,6 +150,22 @@ public final class LED extends SubsystemBase {
 	public void cycleColor(boolean forward) {
 		colorCycle.cycle(forward);
 		setStripColor(colorCycle.getColorCode());
+	}
+
+	public void rainbow() {
+		setStripColor(colorCycleRainbow.getColorCode());
+		cycle++;
+		if (cycle % 10 == 0) {
+			colorCycleRainbow.cycle(true);
+		}
+	}
+
+	public void yellowBlack() {
+		setStripColor(colorCycleYellowBlack.getColorCode());
+		cycle++;
+		if (cycle % 10 == 0) {
+			colorCycleYellowBlack.cycle(true);
+		}
 	}
 
 	public Color getColor() {

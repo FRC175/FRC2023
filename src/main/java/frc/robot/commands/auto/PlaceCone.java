@@ -23,6 +23,7 @@ public class PlaceCone extends SequentialCommandGroup {
             new InstantCommand(() -> gripper.setGripOpen()),
             new WaitCommand(0.7),
             new InstantCommand(() -> gripper.setGripClosed()),
+            new DriveAuto(drive, -8, 0.1),
             // new InstantCommand(() -> telescope.setExtendOff()),
             // new SetArmPosition(arm, ArmState.INITIAL, true, 0.2)
             new SetArmPosition(arm, ArmState.INITIAL, true, 0.3)

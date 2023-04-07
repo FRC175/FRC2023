@@ -17,6 +17,13 @@ public class DriveToGoal extends CommandBase {
     private double speed;
     private boolean forward;
 
+	/**
+	 * Drives the robot until it achieves a boolean goal.
+	 * @param drive drive subsystem
+	 * @param supplier lambda boolean function that ends drive when reads true
+	 * @param speed magnitude of speed that the drive goes at
+	 * @param forward forward or backward?
+	 */
 	public DriveToGoal(Drive drive, BooleanSupplier supplier, double speed, boolean forward) { // MAKE SURE TO CHANGE DATA TYPE TO SUBSYSTEM
 		this.drive = drive;
 		this.goal = supplier;

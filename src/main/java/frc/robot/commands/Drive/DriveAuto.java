@@ -9,7 +9,12 @@ public class DriveAuto extends CommandBase {
     private final int counts; 
     private final double speed;
 
-    public DriveAuto( Drive drive, int counts, double speed) {
+    /**
+     * Causes the robot to drive a constant number of counts, useful for dead-reckoning
+     * @param counts number of rotations (with direction), only integers
+     * @param speed magnitude of speed, no direction!
+     */
+    public DriveAuto(Drive drive, int counts, double speed) {
         this.drive = drive;
         this.counts = counts;
         this.speed = speed;
